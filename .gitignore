@@ -30,3 +30,15 @@
 *.exe
 *.out
 *.app
+
+.DS_Store
+
+# Build
+build*/
+.cache/
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Setekh_artefacts/
+cmake_install.cmake
+Setekh.xcodeproj/
