@@ -1,25 +1,29 @@
-name: mac
+name: Build
 
-on:
-  push:
-    branches: [main]
+on: [push]
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
 
 jobs:
-  build:
+  macos-universal-build:
     runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
 
-      - name: prepare
-        run: |
-          git submodule init
-          git submodule update
+      - name: Create Build Environment
+        run: cmake -E make_directory ${{github.workspace}}/build
 
-      - name: cmake
-        run: |
-          mkdir build
-          cmake -B build .
+      - name: Configure CMake
+        shell: bash
+        working-directory: ${{github.workspace}}/build
+        run: cmake $GITHUB_WORKSPACE -G "Xcode"
 
-      - name: build
-        run: cmake --build build
+      - name: Build
+        working-directory: ${{github.workspace}}/build
+        shell: bash
+        run: cmake --build . --config $BUILD_TYPE
