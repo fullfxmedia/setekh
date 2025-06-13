@@ -15,6 +15,12 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Upgrade CMake
+        run: |
+          brew update
+          brew install cmake
+          cmake --version
+
       - name: Create Build Environment
         run: cmake -E make_directory ${{github.workspace}}/build
 
