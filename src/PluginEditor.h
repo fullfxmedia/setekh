@@ -14,9 +14,8 @@ public:
 private:
     SetekhAudioProcessor& processor;
 
-    juce::Slider amountSlider, mixSlider;
-    juce::Label amountLabel, mixLabel;
-    juce::AudioProcessorValueTreeState::SliderAttachment amountAttachment, mixAttachment;
+    juce::Slider driveSlider, mixSlider;
+    juce::AudioProcessorValueTreeState::SliderAttachment driveAttachment, mixAttachment;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SetekhAudioProcessorEditor)
 };

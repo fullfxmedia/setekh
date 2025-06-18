@@ -8,7 +8,7 @@ SetekhAudioProcessor::SetekhAudioProcessor()
 
 juce::AudioProcessorValueTreeState::ParameterLayout SetekhAudioProcessor::createParams() {
   std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
-  params.push_back(std::make_unique<juce::AudioParameterFloat>("amount", "Amount", 0.0f, 10.0f, 1.0f));
+  params.push_back(std::make_unique<juce::AudioParameterFloat>("drive", "Drive", 0.0f, 10.0f, 1.0f));
   params.push_back(std::make_unique<juce::AudioParameterFloat>("mix", "Mix", 0.0f, 1.0f, 0.5f));
   return { params.begin(), params.end() };
 }
@@ -23,7 +23,7 @@ bool SetekhAudioProcessor::isBusesLayoutSupported(const BusesLayout& layouts) co
 }
 
 void SetekhAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&) {
-  auto amount = apvts.getRawParameterValue("amount")->load();
+  auto amount = apvts.getRawParameterValue("drive")->load();
   auto mix = apvts.getRawParameterValue("mix")->load();
 
   for (int ch = 0; ch < buffer.getNumChannels(); ++ch) {
