@@ -1,3 +1,7 @@
+//
+// Copyright (c) 2025 Full FX Media
+//
+
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
@@ -7,10 +11,10 @@ SetekhAudioProcessor::SetekhAudioProcessor()
       apvts(*this, nullptr, "PARAMS", createParams()) {
 }
 
-juce::AudioProcessorValueTreeState::ParameterLayout SetekhAudioProcessor::createParams() {
-    std::vector<std::unique_ptr<juce::RangedAudioParameter> > params;
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("drive", "Drive", 0.0f, 10.0f, 1.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("mix", "Mix", 0.0f, 1.0f, 0.5f));
+AudioProcessorValueTreeState::ParameterLayout SetekhAudioProcessor::createParams() {
+    std::vector<std::unique_ptr<RangedAudioParameter> > params;
+    params.push_back(std::make_unique<AudioParameterFloat>("drive", "Drive", 0.0f, 10.0f, 1.0f));
+    params.push_back(std::make_unique<AudioParameterFloat>("mix", "Mix", 0.0f, 1.0f, 0.5f));
     return {params.begin(), params.end()};
 }
 
@@ -35,19 +39,12 @@ void SetekhAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce::
         for (int i = 0; i < buffer.getNumSamples(); ++i) {
             auto clean = samples[i];
 
-            // Apply gain before clipping
-            float driven = clean * drive;
-
-            // Soft clip using atanh
-            float clipped = std::atanh(juce::jlimit(-0.999f, 0.999f, driven));
-            clipped /= std::atanh(0.999f); // Normalize so max output is ~1.0
+            // Soft clip using atan
+            float clipped = std::atan(drive * clean);
+            clipped /= std::atan(drive);
 
             // Mix dry and wet
             samples[i] = clean * (1.0f - mix) + clipped * mix;
-
-            //auto clean = samples[i];
-            //auto distorted = std::tanh(samples[i] * amount);
-            //samples[i] = clean * (1.0f - mix) + distorted * mix;
         }
     }
 }

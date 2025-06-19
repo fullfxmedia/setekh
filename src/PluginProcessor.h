@@ -1,3 +1,7 @@
+//
+// Copyright (c) 2025 Full FX Media
+//
+
 #pragma once
 
 #include <JuceHeader.h>
@@ -56,31 +60,3 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SetekhAudioProcessor)
 };
-
-// #pragma once
-
-// #include <JuceHeader.h>
-
-// class SetekhAudioProcessor : public juce::AudioProcessor {
-// public:
-//   SetekhAudioProcessor();
-//   ~SetekhAudioProcessor() override = default;
-
-//   void prepareToPlay(double sampleRate, int samplesPerBlock) override;
-//   void releaseResources() override;
-//   void processBlock(juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
-
-//   juce::AudioProcessorEditor* createEditor() override;
-//   bool hasEditor() const override { return true; }
-
-//   const juce::String getName() const override { return "Setekh"; }
-
-//   bool isBusesLayoutSupported(const BusesLayout& layouts) const override;
-
-//   juce::AudioProcessorValueTreeState apvts;
-
-// private:
-//   juce::AudioProcessorValueTreeState::ParameterLayout createParams();
-
-//   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SetekhAudioProcessor)
-// };
