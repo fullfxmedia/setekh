@@ -23,15 +23,27 @@ bool SetekhAudioProcessor::isBusesLayoutSupported(const BusesLayout& layouts) co
 }
 
 void SetekhAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&) {
-  auto amount = apvts.getRawParameterValue("drive")->load();
+  auto drive = apvts.getRawParameterValue("drive")->load();
   auto mix = apvts.getRawParameterValue("mix")->load();
 
   for (int ch = 0; ch < buffer.getNumChannels(); ++ch) {
       auto* samples = buffer.getWritePointer(ch);
       for (int i = 0; i < buffer.getNumSamples(); ++i) {
-          auto clean = samples[i];
-          auto distorted = std::tanh(samples[i] * amount);
-          samples[i] = clean * (1.0f - mix) + distorted * mix;
+        auto clean = samples[i];
+
+        // Apply gain before clipping
+        float driven = clean * drive;
+
+        // Soft clip using atanh
+        float clipped = std::atanh(juce::jlimit(-0.999f, 0.999f, driven));
+        clipped /= std::atanh(0.999f); // Normalize so max output is ~1.0
+
+        // Mix dry and wet
+        samples[i] = clean * (1.0f - mix) + clipped * mix;
+
+          //auto clean = samples[i];
+          //auto distorted = std::tanh(samples[i] * amount);
+          //samples[i] = clean * (1.0f - mix) + distorted * mix;
       }
   }
 }

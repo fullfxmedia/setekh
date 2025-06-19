@@ -34,6 +34,7 @@
 .DS_Store
 
 # Build
+cmake-build-make/
 build*/
 .cache/
 CMakeCache.txt
@@ -42,3 +43,8 @@ CMakeScripts/
 Setekh_artefacts/
 cmake_install.cmake
 Setekh.xcodeproj/
+Testing/
+
+# ide
+.vscode
+.cmake
