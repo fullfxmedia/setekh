@@ -18,11 +18,11 @@ public:
 private:
     SetekhAudioProcessor &processor;
 
-    juce::Slider driveSlider, mixSlider;
+    juce::Slider driveSlider, mixSlider, inputGainSlider;
 
     std::unique_ptr<CustomKnobLNF> customKnobLNF;
 
-    juce::AudioProcessorValueTreeState::SliderAttachment driveAttachment, mixAttachment;
+    juce::AudioProcessorValueTreeState::SliderAttachment driveAttachment, mixAttachment, inputGainAttachment;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SetekhAudioProcessorEditor)
 };

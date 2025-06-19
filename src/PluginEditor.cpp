@@ -3,18 +3,20 @@
 SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     : AudioProcessorEditor(&p), processor(p),
       driveAttachment(p.apvts, "drive", driveSlider),
-      mixAttachment(p.apvts, "mix", mixSlider) {
+      mixAttachment(p.apvts, "mix", mixSlider),
+      inputGainAttachment(p.apvts, "inputGain", inputGainSlider) {
     driveSlider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
     driveSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 60, 20);
+    customKnobLNF = std::make_unique<CustomKnobLNF>();
+    driveSlider.setLookAndFeel(customKnobLNF.get());
 
     mixSlider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
     mixSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 18);
 
-    customKnobLNF = std::make_unique<CustomKnobLNF>();
-    driveSlider.setLookAndFeel(customKnobLNF.get());
+    inputGainSlider.setSliderStyle(juce::Slider::LinearVertical);
+    inputGainSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 20);
 
-
-    for (auto *comp: {&driveSlider, &mixSlider}) {
+    for (auto *comp: {&driveSlider, &mixSlider, &inputGainSlider}) {
         addAndMakeVisible(*comp);
     }
 
@@ -38,6 +40,7 @@ void SetekhAudioProcessorEditor::paint(juce::Graphics &g) {
 
 void SetekhAudioProcessorEditor::resized() {
     int width = getWidth();
+    int height = getHeight();
 
     // Knob sizes
     int driveKnobSize = 225;
@@ -53,4 +56,11 @@ void SetekhAudioProcessorEditor::resized() {
     // Mix knob below the drive knob, centered horizontally
     int mixY = driveY + driveKnobSize + verticalSpacing;
     mixSlider.setBounds(centerX - mixKnobSize / 2, mixY, mixKnobSize, mixKnobSize);
+
+    // Input Gain slider
+    int inputGainSliderWidth = 50;
+    int inputGainSliderHeight = height - 40; // add some top/bottom margin
+    int inputGainSliderX = 20;
+    int inputGainSliderY = 20;
+    inputGainSlider.setBounds(inputGainSliderX, inputGainSliderY, inputGainSliderWidth, inputGainSliderHeight);
 }
