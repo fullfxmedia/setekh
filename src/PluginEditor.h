@@ -5,14 +5,16 @@
 
 class SetekhAudioProcessorEditor : public juce::AudioProcessorEditor {
 public:
-  SetekhAudioProcessorEditor(SetekhAudioProcessor&);
-  ~SetekhAudioProcessorEditor() override = default;
+    SetekhAudioProcessorEditor(SetekhAudioProcessor &);
 
-  void paint(juce::Graphics&) override;
-  void resized() override;
+    ~SetekhAudioProcessorEditor() override = default;
+
+    void paint(juce::Graphics &) override;
+
+    void resized() override;
 
 private:
-    SetekhAudioProcessor& processor;
+    SetekhAudioProcessor &processor;
 
     juce::Slider driveSlider, mixSlider;
     juce::AudioProcessorValueTreeState::SliderAttachment driveAttachment, mixAttachment;
