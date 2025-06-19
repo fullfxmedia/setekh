@@ -52,6 +52,8 @@ source_group(Source
         ${CMAKE_CURRENT_SOURCE_DIR}/src/PluginProcessor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/PluginEditor.h
         ${CMAKE_CURRENT_SOURCE_DIR}/src/PluginEditor.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/CustomKnobLNF.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/CustomKnobLNF.cpp
 )
 
 target_sources(${PROJECT_NAME} PRIVATE ${src})
@@ -62,6 +64,11 @@ target_compile_definitions(${PROJECT_NAME}
         JUCE_USE_CURL=0
         JUCE_VST3_CAN_REPLACE_VST2=0
 )
+
+# Resources
+file(GLOB_RECURSE res "${CMAKE_CURRENT_SOURCE_DIR}/resources/*.*")
+juce_add_binary_data(${PROJECT_NAME}_res SOURCES ${res})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_res)
 
 # JUCE Libraries
 juce_generate_juce_header(${PROJECT_NAME})

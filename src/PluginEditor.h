@@ -1,6 +1,8 @@
 #pragma once
 
 #include <JuceHeader.h>
+
+#include "CustomKnobLNF.h"
 #include "PluginProcessor.h"
 
 class SetekhAudioProcessorEditor : public juce::AudioProcessorEditor {
@@ -17,6 +19,9 @@ private:
     SetekhAudioProcessor &processor;
 
     juce::Slider driveSlider, mixSlider;
+
+    std::unique_ptr<CustomKnobLNF> customKnobLNF;
+
     juce::AudioProcessorValueTreeState::SliderAttachment driveAttachment, mixAttachment;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SetekhAudioProcessorEditor)
