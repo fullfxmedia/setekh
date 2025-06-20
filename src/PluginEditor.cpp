@@ -28,7 +28,6 @@ void SetekhAudioProcessorEditor::paint(juce::Graphics &g) {
     g.fillAll(juce::Colours::black);
 
     // Top gray bar
-    int topBarHeight = 50;
     g.setColour(juce::Colour(0xff2e2e2e));
     g.fillRect(0, 0, getWidth(), topBarHeight);
 
@@ -59,8 +58,9 @@ void SetekhAudioProcessorEditor::resized() {
 
     // Input Gain slider
     int inputGainSliderWidth = 50;
-    int inputGainSliderHeight = height - 40; // add some top/bottom margin
+    int availableHeight = height - topBarHeight - 20;
+    int inputGainSliderHeight = static_cast<int>(availableHeight * 0.8f);
     int inputGainSliderX = 20;
-    int inputGainSliderY = 20;
+    int inputGainSliderY = topBarHeight + 10;
     inputGainSlider.setBounds(inputGainSliderX, inputGainSliderY, inputGainSliderWidth, inputGainSliderHeight);
 }

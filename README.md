@@ -15,3 +15,7 @@ git clone --recurse-submodules https://github.com/tiagolr/ripplerx.git
 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" -S . -B ./build
 cmake --build ./cmake-build-make --config Release
 ```
+
+## Mockup
+
+<img src="docs/mockup.png" alt="drawing" width="400"/>
