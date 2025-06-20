@@ -22,6 +22,9 @@ AudioProcessorValueTreeState::ParameterLayout SetekhAudioProcessor::createParams
     params.push_back(std::make_unique<juce::AudioParameterFloat>("inputGain", "Input Gain",juce::NormalisableRange<float>(-24.0f, 24.0f), 0.0f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("outputGain", "Output Gain", juce::NormalisableRange<float>(-24.0f, 24.0f), 0.0f));
 
+    // Bypass toggle
+    params.push_back(std::make_unique<juce::AudioParameterBool>("bypass", "Bypass", false));
+
     return {params.begin(), params.end()};
 }
 
@@ -38,6 +41,12 @@ bool SetekhAudioProcessor::isBusesLayoutSupported(const BusesLayout &layouts) co
 }
 
 void SetekhAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce::MidiBuffer &) {
+    // If bypass is enabled, do nothing
+    auto bypass = apvts.getRawParameterValue("bypass")->load();
+    if (bypass > 0.5f) {
+        return;
+    }
+
     auto drive = apvts.getRawParameterValue("drive")->load();
     auto mix = apvts.getRawParameterValue("mix")->load();
     auto inputGain = juce::Decibels::decibelsToGain(apvts.getRawParameterValue("inputGain")->load());

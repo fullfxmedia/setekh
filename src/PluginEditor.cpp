@@ -5,7 +5,7 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
       driveAttachment(p.apvts, "drive", driveSlider),
       mixAttachment(p.apvts, "mix", mixSlider),
       inputGainAttachment(p.apvts, "inputGain", inputGainSlider),
-      outputGainAttachment(p.apvts, "outputGain", outputGainSlider){
+      outputGainAttachment(p.apvts, "outputGain", outputGainSlider) {
 
     driveSlider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
     driveSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 60, 20);
@@ -21,9 +21,18 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     outputGainSlider.setSliderStyle(juce::Slider::LinearVertical);
     outputGainSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 20);
 
+    // Bypass toggle
+    bypassAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(p.apvts, "bypass", bypassToggle);
+    bypassToggle.setButtonText("Bypass");
+    bypassToggle.setColour(juce::ToggleButton::textColourId, juce::Colours::white);
+
+    // Show all sliders
     for (auto *comp: {&driveSlider, &mixSlider, &inputGainSlider, &outputGainSlider}) {
         addAndMakeVisible(*comp);
     }
+
+    // Show bypass toggle
+    addAndMakeVisible(bypassToggle);
 
     setSize(475, 580);
 }
@@ -75,4 +84,10 @@ void SetekhAudioProcessorEditor::resized() {
     int outputGainSliderHeight = static_cast<int>(availableHeight * 0.8f);
     int outputGainSliderX = width - sliderWidth - 40;
     outputGainSlider.setBounds(outputGainSliderX, sliderY, sliderWidth, outputGainSliderHeight);
+
+    int bypassWidth = 80;
+    int bypassHeight = 30;
+    int bypassX = width - bypassWidth - 15; // 15px margin from right edge
+    int bypassY = (topBarHeight - bypassHeight) / 2; // Center vertically in top bar
+    bypassToggle.setBounds(bypassX, bypassY, bypassWidth, bypassHeight);
 }

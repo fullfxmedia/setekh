@@ -20,6 +20,10 @@ private:
 
     int topBarHeight = 50;
     juce::Slider driveSlider, mixSlider, inputGainSlider, outputGainSlider;
+
+    juce::ToggleButton bypassToggle;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> bypassAttachment;
+
     std::unique_ptr<CustomKnobLNF> customKnobLNF;
     juce::AudioProcessorValueTreeState::SliderAttachment driveAttachment, mixAttachment, inputGainAttachment, outputGainAttachment;
 
