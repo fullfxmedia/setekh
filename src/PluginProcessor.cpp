@@ -39,12 +39,25 @@ void SetekhAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce::
         for (int i = 0; i < buffer.getNumSamples(); ++i) {
             auto clean = samples[i];
 
-            // Soft clip using atan
-            float clipped = std::atan(drive * clean);
-            clipped /= std::atan(drive);
+            if (std::abs(drive) < 1e-6f) {
+                samples[i] = clean;
+                continue;
+            }
+
+            // Multi-stage Saturation
+            float processed = clean * drive;
+
+            // Cubic
+            processed = processed - (processed * processed * processed) * 0.1f;
+
+            // Limiter
+            processed = std::tanh(processed * 0.7f) / std::tanh(0.7f);
+
+            // Scaled down
+            processed /= (drive * 0.7f);
 
             // Mix dry and wet
-            samples[i] = clean * (1.0f - mix) + clipped * mix;
+            samples[i] = clean * (1.0f - mix) + processed * mix;
         }
     }
 }
