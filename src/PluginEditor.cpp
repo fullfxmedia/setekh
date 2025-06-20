@@ -4,7 +4,9 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     : AudioProcessorEditor(&p), processor(p),
       driveAttachment(p.apvts, "drive", driveSlider),
       mixAttachment(p.apvts, "mix", mixSlider),
-      inputGainAttachment(p.apvts, "inputGain", inputGainSlider) {
+      inputGainAttachment(p.apvts, "inputGain", inputGainSlider),
+      outputGainAttachment(p.apvts, "outputGain", outputGainSlider){
+
     driveSlider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
     driveSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 60, 20);
     customKnobLNF = std::make_unique<CustomKnobLNF>();
@@ -16,7 +18,10 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     inputGainSlider.setSliderStyle(juce::Slider::LinearVertical);
     inputGainSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 20);
 
-    for (auto *comp: {&driveSlider, &mixSlider, &inputGainSlider}) {
+    outputGainSlider.setSliderStyle(juce::Slider::LinearVertical);
+    outputGainSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 20);
+
+    for (auto *comp: {&driveSlider, &mixSlider, &inputGainSlider, &outputGainSlider}) {
         addAndMakeVisible(*comp);
     }
 
@@ -49,18 +54,25 @@ void SetekhAudioProcessorEditor::resized() {
     int centerX = width / 2;
 
     // Drive knob at top center
-    int driveY = 80;
+    int driveY = 100;
     driveSlider.setBounds(centerX - driveKnobSize / 2, driveY, driveKnobSize, driveKnobSize);
 
     // Mix knob below the drive knob, centered horizontally
     int mixY = driveY + driveKnobSize + verticalSpacing;
     mixSlider.setBounds(centerX - mixKnobSize / 2, mixY, mixKnobSize, mixKnobSize);
 
+    // Gain sliders
+    int sliderWidth = 50;
+    int sliderY = topBarHeight + 10;
+
     // Input Gain slider
-    int inputGainSliderWidth = 50;
     int availableHeight = height - topBarHeight - 20;
     int inputGainSliderHeight = static_cast<int>(availableHeight * 0.8f);
-    int inputGainSliderX = 20;
-    int inputGainSliderY = topBarHeight + 10;
-    inputGainSlider.setBounds(inputGainSliderX, inputGainSliderY, inputGainSliderWidth, inputGainSliderHeight);
+    int inputGainSliderX = 40;
+    int inputGainSliderY = sliderY;
+    inputGainSlider.setBounds(inputGainSliderX, inputGainSliderY, sliderWidth, inputGainSliderHeight);
+
+    int outputGainSliderHeight = static_cast<int>(availableHeight * 0.8f);
+    int outputGainSliderX = width - sliderWidth - 40;
+    outputGainSlider.setBounds(outputGainSliderX, sliderY, sliderWidth, outputGainSliderHeight);
 }

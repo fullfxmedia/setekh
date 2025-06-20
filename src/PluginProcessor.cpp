@@ -13,8 +13,15 @@ SetekhAudioProcessor::SetekhAudioProcessor()
 
 AudioProcessorValueTreeState::ParameterLayout SetekhAudioProcessor::createParams() {
     std::vector<std::unique_ptr<RangedAudioParameter> > params;
-    params.push_back(std::make_unique<AudioParameterFloat>("drive", "Drive", 0.0f, 10.0f, 1.0f));
+
+    // Drive, Mix knobs
+    params.push_back(std::make_unique<AudioParameterFloat>("drive", "Drive", 0.0f, 5.0f, 1.0f));
     params.push_back(std::make_unique<AudioParameterFloat>("mix", "Mix", 0.0f, 1.0f, 0.5f));
+
+    // Add input/output gain parameters
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("inputGain", "Input Gain",juce::NormalisableRange<float>(-24.0f, 24.0f), 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("outputGain", "Output Gain", juce::NormalisableRange<float>(-24.0f, 24.0f), 0.0f));
+
     return {params.begin(), params.end()};
 }
 
@@ -33,11 +40,13 @@ bool SetekhAudioProcessor::isBusesLayoutSupported(const BusesLayout &layouts) co
 void SetekhAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce::MidiBuffer &) {
     auto drive = apvts.getRawParameterValue("drive")->load();
     auto mix = apvts.getRawParameterValue("mix")->load();
+    auto inputGain = juce::Decibels::decibelsToGain(apvts.getRawParameterValue("inputGain")->load());
+    auto outputGain = juce::Decibels::decibelsToGain(apvts.getRawParameterValue("outputGain")->load());
 
     for (int ch = 0; ch < buffer.getNumChannels(); ++ch) {
         auto *samples = buffer.getWritePointer(ch);
         for (int i = 0; i < buffer.getNumSamples(); ++i) {
-            auto clean = samples[i];
+            auto clean = samples[i] * inputGain;
 
             if (std::abs(drive) < 1e-6f) {
                 samples[i] = clean;
@@ -53,11 +62,11 @@ void SetekhAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce::
             // Limiter
             processed = std::tanh(processed * 0.7f) / std::tanh(0.7f);
 
-            // Scaled down
+            // Scale down the distortion
             processed /= (drive * 0.7f);
 
             // Mix dry and wet
-            samples[i] = clean * (1.0f - mix) + processed * mix;
+            samples[i] = (clean * (1.0f - mix) + processed * mix) * outputGain;
         }
     }
 }
