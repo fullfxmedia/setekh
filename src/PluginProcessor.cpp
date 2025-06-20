@@ -54,7 +54,9 @@ void SetekhAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce::
 
     for (int ch = 0; ch < buffer.getNumChannels(); ++ch) {
         auto *samples = buffer.getWritePointer(ch);
+
         for (int i = 0; i < buffer.getNumSamples(); ++i) {
+            // Apply input gain
             auto clean = samples[i] * inputGain;
 
             if (std::abs(drive) < 1e-6f) {
@@ -62,19 +64,13 @@ void SetekhAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce::
                 continue;
             }
 
-            // Multi-stage Saturation
+            // Apply distortion
             float processed = clean * drive;
 
-            // Cubic
-            processed = processed - (processed * processed * processed) * 0.1f;
+            // Soft Limiter
+            processed = std::tanh(processed * 0.7f);
 
-            // Limiter
-            processed = std::tanh(processed * 0.7f) / std::tanh(0.7f);
-
-            // Scale down the distortion
-            processed /= (drive * 0.7f);
-
-            // Mix dry and wet
+            // Mix dry and wet, apply output gain
             samples[i] = (clean * (1.0f - mix) + processed * mix) * outputGain;
         }
     }
