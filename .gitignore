@@ -44,7 +44,7 @@ Setekh_artefacts/
 cmake_install.cmake
 Setekh.xcodeproj/
 Testing/
-
+docs/ui/exports
 # ide
 .vscode
 .cmake

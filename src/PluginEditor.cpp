@@ -39,7 +39,7 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
 
 void SetekhAudioProcessorEditor::paint(juce::Graphics &g) {
     // Background color
-    g.fillAll(juce::Colours::black);
+    g.fillAll(juce::Colour::fromRGB(0x3B, 0x3A, 0x45));
 
     // Top gray bar
     g.setColour(juce::Colour(0xff2e2e2e));
@@ -56,14 +56,14 @@ void SetekhAudioProcessorEditor::resized() {
     int height = getHeight();
 
     // Knob sizes
-    int driveKnobSize = 225;
+    int driveKnobSize = 250;
     int mixKnobSize = 80;
 
     int verticalSpacing = 30;
     int centerX = width / 2;
 
     // Drive knob at top center
-    int driveY = 100;
+    int driveY = 75;
     driveSlider.setBounds(centerX - driveKnobSize / 2, driveY, driveKnobSize, driveKnobSize);
 
     // Mix knob below the drive knob, centered horizontally
