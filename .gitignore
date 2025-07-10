@@ -45,6 +45,10 @@ cmake_install.cmake
 Setekh.xcodeproj/
 Testing/
 docs/ui/exports
+
+# affinity designer
+**/*.afdesign~lock~
+
 # ide
 .vscode
 .cmake
