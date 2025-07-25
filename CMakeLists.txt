@@ -54,6 +54,8 @@ source_group(Source
         ${CMAKE_CURRENT_SOURCE_DIR}/src/PluginEditor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/CustomKnobLNF.h
         ${CMAKE_CURRENT_SOURCE_DIR}/src/CustomKnobLNF.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/CustomSliderLNF.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/CustomSliderLNF.cpp
 )
 
 target_sources(${PROJECT_NAME} PRIVATE ${src})

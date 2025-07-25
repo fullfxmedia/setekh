@@ -15,11 +15,27 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     mixSlider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
     mixSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 18);
 
+    // Set up input gain slider
     inputGainSlider.setSliderStyle(juce::Slider::LinearVertical);
     inputGainSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 20);
+    inputGainSlider.setRange(-60.0, 12.0, 0.1);
+    inputGainSlider.setValue(0.0);
 
+    // Configure and apply input gain look and feel
+    inputGainLNF.setSliderType(CustomSliderLNF::InputGain);
+    inputGainSlider.setLookAndFeel(&inputGainLNF);
+    addAndMakeVisible(inputGainSlider);
+
+    // Set up output gain slider
     outputGainSlider.setSliderStyle(juce::Slider::LinearVertical);
     outputGainSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 20);
+    outputGainSlider.setRange(-60.0, 12.0, 0.1);
+    outputGainSlider.setValue(0.0);
+
+    // Configure and apply output gain look and feel
+    outputGainLNF.setSliderType(CustomSliderLNF::OutputGain);
+    outputGainSlider.setLookAndFeel(&outputGainLNF);
+    addAndMakeVisible(outputGainSlider);
 
     // Bypass toggle
     bypassAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(p.apvts, "bypass", bypassToggle);
