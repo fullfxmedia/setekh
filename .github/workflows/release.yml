@@ -1,8 +1,8 @@
-name: Build
+name: Release
 
 on:
   push:
-    branches-ignore: ['main']
+    branches: ['main']
 
 env:
   BUILD_TYPE: Release
@@ -34,3 +34,15 @@ jobs:
         working-directory: ${{github.workspace}}/build
         shell: bash
         run: cmake --build . --config $BUILD_TYPE
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: setekh-macos
+          path: |
+            ./build/Setekh_artefacts/Release/LV2
+            ./build/Setekh_artefacts/Release/AU
+            ./build/Setekh_artefacts/Release/VST3
+            ./build/Setekh_artefacts/Release/readme.txt
+            !./build/Setekh_artefacts/Release/VST3/*.exp
+            !./build/Setekh_artefacts/Release/VST3/*.lib
