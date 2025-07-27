@@ -15,7 +15,7 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     inputGainSlider.setSliderStyle(juce::Slider::LinearVertical);
     inputGainSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 20);
     inputGainSlider.setRange(-24.0, 24.0, 0.1);
-    inputGainSlider.setNumDecimalPlacesToDisplay(0.01f);
+    inputGainSlider.setNumDecimalPlacesToDisplay(1);
     inputGainSlider.setValue(0.0);
     inputGainLNF.setSliderType(CustomSliderLNF::SliderType::InputGain);
     inputGainSlider.setLookAndFeel(&inputGainLNF);
@@ -25,7 +25,7 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     outputGainSlider.setSliderStyle(juce::Slider::LinearVertical);
     outputGainSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 20);
     outputGainSlider.setRange(-24.0, 24.0, 0.1);
-    outputGainSlider.setNumDecimalPlacesToDisplay(0.01f);
+    outputGainSlider.setNumDecimalPlacesToDisplay(1);
     outputGainSlider.setValue(0.0);
     outputGainLNF.setSliderType(CustomSliderLNF::SliderType::OutputGain);
     outputGainSlider.setLookAndFeel(&outputGainLNF);
@@ -66,7 +66,7 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
             inputGainSlider.setValue(-outputGainSlider.getValue());
         }
     };
-    
+
     linkGainsToggle.onStateChange = [this] {
         if (linkGainsToggle.getToggleState()) {
             outputGainSlider.setValue(-inputGainSlider.getValue());

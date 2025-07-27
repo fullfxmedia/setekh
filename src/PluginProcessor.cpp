@@ -18,9 +18,15 @@ AudioProcessorValueTreeState::ParameterLayout SetekhAudioProcessor::createParams
     params.push_back(std::make_unique<AudioParameterFloat>("drive", "Drive", 0.0f, 5.0f, 1.0f));
 
     // Add input/output gain parameters
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("inputGain", "Input Gain",juce::NormalisableRange<float>(-24.0f, 24.0f), 0.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("outputGain", "Output Gain", juce::NormalisableRange<float>(-24.0f, 24.0f), 0.0f));
-
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("inputGain", "Input Gain",juce::NormalisableRange<float>(-24.0f, 24.0f), 0.0f,
+    juce::AudioParameterFloatAttributes().withStringFromValueFunction([](float value, int) {
+        return juce::String(value, 1);
+    })));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("outputGain", "Output Gain", juce::NormalisableRange<float>(-24.0f, 24.0f), 0.0f,
+    juce::AudioParameterFloatAttributes().withStringFromValueFunction([](float value, int) {
+        return juce::String(value, 1);
+    })));
+  
     // Bypass toggle
     params.push_back(std::make_unique<juce::AudioParameterBool>("bypass", "Bypass", false));
 
