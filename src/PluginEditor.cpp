@@ -86,24 +86,19 @@ void SetekhAudioProcessorEditor::resized() {
     int mixY = driveY + driveKnobSize + verticalSpacing;
     mixSlider.setBounds(centerX - mixKnobSize / 2, mixY, mixKnobSize, mixKnobSize);
 
-    // Gain sliders
-    int sliderWidth = 50;
-    int sliderY = topBarHeight + 10;
+    int sliderWidth = 80;
+    int sliderHeight = 420;
+    int sliderY = topBarHeight + 20;
+    int inputGainSliderX = 30;
+    int outputGainSliderX = width - sliderWidth - 30;
 
-    // Input Gain slider
-    int availableHeight = height - topBarHeight - 20;
-    int inputGainSliderHeight = static_cast<int>(availableHeight * 0.8f);
-    int inputGainSliderX = 40;
-    int inputGainSliderY = sliderY;
-    inputGainSlider.setBounds(inputGainSliderX, inputGainSliderY, sliderWidth, inputGainSliderHeight);
+    inputGainSlider.setBounds(inputGainSliderX, sliderY, sliderWidth, sliderHeight);
+    outputGainSlider.setBounds(outputGainSliderX, sliderY, sliderWidth, sliderHeight);
 
-    int outputGainSliderHeight = static_cast<int>(availableHeight * 0.8f);
-    int outputGainSliderX = width - sliderWidth - 40;
-    outputGainSlider.setBounds(outputGainSliderX, sliderY, sliderWidth, outputGainSliderHeight);
-
+    // Bypass toggle (unchanged)
     int bypassWidth = 80;
     int bypassHeight = 30;
-    int bypassX = width - bypassWidth - 15; // 15px margin from right edge
-    int bypassY = (topBarHeight - bypassHeight) / 2; // Center vertically in top bar
+    int bypassX = width - bypassWidth - 15;
+    int bypassY = (topBarHeight - bypassHeight) / 2;
     bypassToggle.setBounds(bypassX, bypassY, bypassWidth, bypassHeight);
 }
