@@ -13,15 +13,6 @@ CustomSliderLNF::CustomSliderLNF()
                                                          BinaryData::output_slider_pngSize);
     gainSliderThumbImage = juce::ImageCache::getFromMemory(BinaryData::gain_slider_png,
                                                           BinaryData::gain_slider_pngSize);
-
-    // Debug: Check if images loaded successfully
-    std::cout << "Input slider loaded: " << (inputSliderImage.isValid() ? "SUCCESS" : "FAILED") << std::endl;
-    std::cout << "Output slider loaded: " << (outputSliderImage.isValid() ? "SUCCESS" : "FAILED") << std::endl;
-    if (gainSliderThumbImage.isValid()) {
-        std::cout << "Gain thumb loaded: SUCCESS (" << gainSliderThumbImage.getWidth() << "x" << gainSliderThumbImage.getHeight() << ")" << std::endl;
-    } else {
-        std::cout << "Gain thumb loaded: FAILED" << std::endl;
-    }
 }
 
 CustomSliderLNF::~CustomSliderLNF()
@@ -40,23 +31,22 @@ void CustomSliderLNF::drawLinearSlider(juce::Graphics& g, int x, int y, int widt
 {
     std::cout << "drawLinearSlider called for slider type: " << (currentSliderType == InputGain ? "InputGain" : "OutputGain") << std::endl;
 
-    // Get the appropriate background image based on slider type
-    const juce::Image& backgroundImg = (currentSliderType == InputGain) ? inputSliderImage : outputSliderImage;
+    // Draw the background track
+    g.setColour(juce::Colours::darkgrey);
+    g.fillRoundedRectangle(x, y, width, height, 4.0f);
 
-    // if (backgroundImg.isValid())
-    // {
-    //     // Draw the background slider track
-    //     g.drawImage(backgroundImg, x, y, width, height,
-    //                0, 0, backgroundImg.getWidth(), backgroundImg.getHeight());
-    //     std::cout << "Drew background image" << std::endl;
-    // }
-    // else
-    // {
-    std::cout << "Background image invalid, using fallback" << std::endl;
-    // Fallback to default slider drawing if background image fails to load
-    juce::LookAndFeel_V4::drawLinearSlider(g, x, y, width, height, sliderPos,
-                                          minSliderPos, maxSliderPos, style, slider);
-    //}
+    // Draw the value bar
+    g.setColour(juce::Colours::lightgrey);
+    if (style == juce::Slider::SliderStyle::LinearVertical)
+    {
+        // The bar starts from the bottom and goes up to the slider position
+        g.fillRoundedRectangle((float)x, sliderPos, (float)width, (float)(y + height) - sliderPos, 4.0f);
+    }
+    else
+    {
+        // The bar starts from the left and goes to the slider position
+        g.fillRoundedRectangle((float)x, (float)y, sliderPos - x, (float)height, 4.0f);
+    }
 
     drawLinearSliderThumb(g, x, y, width, height, sliderPos, minSliderPos, maxSliderPos, style, slider);
 }

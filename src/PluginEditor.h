@@ -20,7 +20,7 @@ private:
     SetekhAudioProcessor &processor;
 
     int topBarHeight = 50;
-    juce::Slider driveSlider, mixSlider, inputGainSlider, outputGainSlider;
+    juce::Slider driveSlider, inputGainSlider, outputGainSlider;
 
     juce::ToggleButton bypassToggle;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> bypassAttachment;
@@ -30,7 +30,7 @@ private:
     CustomSliderLNF inputGainLNF;
     CustomSliderLNF outputGainLNF;
 
-    juce::AudioProcessorValueTreeState::SliderAttachment driveAttachment, mixAttachment, inputGainAttachment, outputGainAttachment;
+    juce::AudioProcessorValueTreeState::SliderAttachment driveAttachment, inputGainAttachment, outputGainAttachment;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SetekhAudioProcessorEditor)
 };
