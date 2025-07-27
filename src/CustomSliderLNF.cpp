@@ -3,7 +3,6 @@
 //
 
 #include "CustomSliderLNF.h"
-#include <iostream>
 
 CustomSliderLNF::CustomSliderLNF()
 {
@@ -29,23 +28,37 @@ void CustomSliderLNF::drawLinearSlider(juce::Graphics& g, int x, int y, int widt
                                       const juce::Slider::SliderStyle style,
                                       juce::Slider& slider)
 {
-    std::cout << "drawLinearSlider called for slider type: " << (currentSliderType == InputGain ? "InputGain" : "OutputGain") << std::endl;
-
-    // Draw the background track
-    g.setColour(juce::Colours::darkgrey);
-    g.fillRoundedRectangle(x, y, width, height, 4.0f);
-
-    // Draw the value bar
-    g.setColour(juce::Colours::lightgrey);
-    if (style == juce::Slider::SliderStyle::LinearVertical)
+    if (style == juce::Slider::LinearVertical)
     {
-        // The bar starts from the bottom and goes up to the slider position
-        g.fillRoundedRectangle((float)x, sliderPos, (float)width, (float)(y + height) - sliderPos, 4.0f);
+        const int thumbHeight = 56;
+        const int halfThumbHeight = thumbHeight / 2;
+        const int trackWidth = 8; // Make the slider track narrower
+
+        const int trackX = x + (width - trackWidth) / 2;
+        const int trackY = y + halfThumbHeight;
+        const int trackHeight = height - thumbHeight;
+
+        // Draw the background track
+        g.setColour(juce::Colour::fromRGB(0x25, 0x25, 0x25));
+        g.fillRoundedRectangle((float)trackX, (float)trackY, (float)trackWidth, (float)trackHeight, 4.0f);
+
+        // Draw the value bar
+        const float normalizedValue = (float)((slider.getValue() - slider.getMinimum()) / (slider.getMaximum() - slider.getMinimum()));
+        const float barTop = trackY + (1.0f - normalizedValue) * trackHeight;
+        const float barHeight = (float)(trackY + trackHeight) - barTop;
+
+        g.fillRoundedRectangle((float)trackX, barTop, (float)trackWidth, barHeight, 4.0f);
     }
-    else
+    else // Horizontal
     {
-        // The bar starts from the left and goes to the slider position
-        g.fillRoundedRectangle((float)x, (float)y, sliderPos - x, (float)height, 4.0f);
+        const int trackHeight = 8;
+        const int trackY = y + (height - trackHeight) / 2;
+        g.setColour(juce::Colour(0xff252525));
+        g.fillRoundedRectangle((float)x, (float)trackY, (float)width, (float)trackHeight, 4.0f);
+
+        const float barWidth = sliderPos - x;
+        g.setColour(juce::Colours::lightgrey);
+        g.fillRoundedRectangle((float)x, (float)trackY, barWidth, (float)trackHeight, 4.0f);
     }
 
     drawLinearSliderThumb(g, x, y, width, height, sliderPos, minSliderPos, maxSliderPos, style, slider);
@@ -56,64 +69,47 @@ void CustomSliderLNF::drawLinearSliderThumb(juce::Graphics& g, int x, int y, int
                                            const juce::Slider::SliderStyle style,
                                            juce::Slider& slider)
 {
-    std::cout << "=== drawLinearSliderThumb called ===" << std::endl;
-
     if (gainSliderThumbImage.isValid())
     {
-        // Use the original image dimensions to preserve shape and size
-        int thumbWidth = gainSliderThumbImage.getWidth();
-        int thumbHeight = gainSliderThumbImage.getHeight();
+        const int thumbWidth = gainSliderThumbImage.getWidth();
+        const int thumbHeight = gainSliderThumbImage.getHeight();
 
-        // Calculate the actual slider value range for proper positioning
-        double currentValue = slider.getValue();
-        double minValue = slider.getMinimum();
-        double maxValue = slider.getMaximum();
-
-        // Calculate normalized position based on actual slider values (0.0 to 1.0)
-        float normalizedValue = (float)((currentValue - minValue) / (maxValue - minValue));
-
-        // For vertical sliders, invert the position (top = max value)
         if (style == juce::Slider::LinearVertical)
-            normalizedValue = 1.0f - normalizedValue;
+        {
+            const int halfThumbHeight = thumbHeight / 2;
+            const double normalizedValue = (slider.getValue() - slider.getMinimum()) / (slider.getMaximum() - slider.getMinimum());
+            const double invertedNormalizedValue = 1.0 - normalizedValue;
 
-        std::cout << "Value: " << currentValue << ", Normalized: " << normalizedValue << std::endl;
+            const int trackY = y + halfThumbHeight;
+            const int trackHeight = height - thumbHeight;
+            
+            const int thumbCenterY = trackY + (int)(invertedNormalizedValue * trackHeight);
+            
+            const int thumbX = x + (width - thumbWidth) / 2;
+            const int thumbY = thumbCenterY - halfThumbHeight;
 
-        // Calculate thumb position with proper bounds
-        int availableTrackHeight = height - thumbHeight;
-        int thumbY = y + (int)(normalizedValue * availableTrackHeight);
-        int thumbX = x + (width - thumbWidth) / 2;
+            g.setImageResamplingQuality(Graphics::highResamplingQuality);
+            g.drawImageAt(gainSliderThumbImage, thumbX, thumbY);
+        }
+        else // Horizontal
+        {
+            const int halfThumbWidth = thumbWidth / 2;
+            const double normalizedValue = (slider.getValue() - slider.getMinimum()) / (slider.getMaximum() - slider.getMinimum());
 
-        // Ensure thumb stays within bounds
-        thumbY = juce::jlimit(y, y + height - thumbHeight, thumbY);
-        thumbX = juce::jlimit(x, x + width - thumbWidth, thumbX);
+            const int trackX = x + halfThumbWidth;
+            const int trackWidth = width - thumbWidth;
 
-        std::cout << "Drawing thumb at: " << thumbX << ", " << thumbY << std::endl;
+            const int thumbCenterX = trackX + (int)(normalizedValue * trackWidth);
+            
+            const int thumbX = thumbCenterX - halfThumbWidth;
+            const int thumbY = y + (height - thumbHeight) / 2;
 
-        // Draw the custom thumb at original size (no scaling)
-        g.setImageResamplingQuality(Graphics::highResamplingQuality);
-        g.drawImageAt(gainSliderThumbImage, thumbX, thumbY);
+            g.setImageResamplingQuality(Graphics::highResamplingQuality);
+            g.drawImageAt(gainSliderThumbImage, thumbX, thumbY);
+        }
     }
     else
     {
-        std::cout << "Using fallback thumb" << std::endl;
-
-        // Fallback: draw a bright visible thumb
-        int thumbWidth = width - 4;
-        int thumbHeight = 20;
-
-        float normalizedValue = (sliderPos - minSliderPos) / (maxSliderPos - minSliderPos);
-        if (style == juce::Slider::LinearVertical)
-            normalizedValue = 1.0f - normalizedValue;
-
-        int thumbY = y + (int)(normalizedValue * (height - thumbHeight));
-        int thumbX = x + 2;
-
-        thumbY = juce::jlimit(y, y + height - thumbHeight, thumbY);
-
-        // Draw bright fallback thumb
-        g.setColour(juce::Colours::yellow);
-        g.fillRoundedRectangle(thumbX, thumbY, thumbWidth, thumbHeight, 4.0f);
-        g.setColour(juce::Colours::red);
-        g.drawRoundedRectangle(thumbX, thumbY, thumbWidth, thumbHeight, 4.0f, 2.0f);
+        juce::LookAndFeel_V4::drawLinearSliderThumb (g, x, y, width, height, sliderPos, minSliderPos, maxSliderPos, style, slider);
     }
 }

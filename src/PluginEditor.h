@@ -6,19 +6,21 @@
 #include "CustomSliderLNF.h"
 #include "PluginProcessor.h"
 
-class SetekhAudioProcessorEditor : public juce::AudioProcessorEditor {
+class SetekhAudioProcessorEditor : public juce::AudioProcessorEditor, public juce::KeyListener {
 public:
     SetekhAudioProcessorEditor(SetekhAudioProcessor &);
 
     ~SetekhAudioProcessorEditor() override = default;
 
+    using juce::Component::keyPressed;
+
     void paint(juce::Graphics &) override;
 
     void resized() override;
 
-private:
-    SetekhAudioProcessor &processor;
+    bool keyPressed(const juce::KeyPress &key, juce::Component *originatingComponent) override;
 
+private:
     int topBarHeight = 50;
     juce::Slider driveSlider, inputGainSlider, outputGainSlider;
 

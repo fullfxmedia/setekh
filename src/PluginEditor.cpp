@@ -1,7 +1,7 @@
 #include "PluginEditor.h"
 
 SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
-    : AudioProcessorEditor(&p), processor(p),
+    : AudioProcessorEditor(&p),
       driveAttachment(p.apvts, "drive", driveSlider),
       inputGainAttachment(p.apvts, "inputGain", inputGainSlider),
       outputGainAttachment(p.apvts, "outputGain", outputGainSlider) {
@@ -44,7 +44,26 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     // Show bypass toggle
     addAndMakeVisible(bypassToggle);
 
+    // Add key listener to reset slider on backspace
+    inputGainSlider.addKeyListener(this);
+    outputGainSlider.addKeyListener(this);
+
     setSize(475, 580);
+}
+
+bool SetekhAudioProcessorEditor::keyPressed(const juce::KeyPress &key, juce::Component *originatingComponent)
+{
+    if (key.getKeyCode() == juce::KeyPress::backspaceKey)
+    {
+        if (originatingComponent == &inputGainSlider)
+        {
+            inputGainSlider.setValue(0.0);
+            return true;
+        } else if (originatingComponent == &outputGainSlider) {
+            outputGainSlider.setValue(0.0);
+        }
+    }
+    return false;
 }
 
 void SetekhAudioProcessorEditor::paint(juce::Graphics &g) {

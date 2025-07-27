@@ -14,7 +14,7 @@ SetekhAudioProcessor::SetekhAudioProcessor()
 AudioProcessorValueTreeState::ParameterLayout SetekhAudioProcessor::createParams() {
     std::vector<std::unique_ptr<RangedAudioParameter> > params;
 
-    // Drive, Mix knobs
+    // Drive knob
     params.push_back(std::make_unique<AudioParameterFloat>("drive", "Drive", 0.0f, 5.0f, 1.0f));
 
     // Add input/output gain parameters
@@ -47,7 +47,6 @@ void SetekhAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce::
     }
 
     auto drive = apvts.getRawParameterValue("drive")->load();
-    auto mix = apvts.getRawParameterValue("mix")->load();
     auto inputGain = juce::Decibels::decibelsToGain(apvts.getRawParameterValue("inputGain")->load());
     auto outputGain = juce::Decibels::decibelsToGain(apvts.getRawParameterValue("outputGain")->load());
 
