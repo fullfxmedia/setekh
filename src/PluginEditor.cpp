@@ -31,6 +31,12 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     outputGainSlider.setLookAndFeel(&outputGainLNF);
     addAndMakeVisible(outputGainSlider);
 
+    // Link Gains toggle
+    linkGainsAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(p.apvts, "linkGains", linkGainsToggle);
+    linkGainsToggle.setButtonText("Link Gains");
+    linkGainsToggle.setColour(juce::ToggleButton::textColourId, juce::Colours::white);
+    addAndMakeVisible(linkGainsToggle);
+
     // Bypass toggle
     bypassAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(p.apvts, "bypass", bypassToggle);
     bypassToggle.setButtonText("Bypass");
@@ -47,6 +53,19 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     // Add key listener to reset slider on backspace
     inputGainSlider.addKeyListener(this);
     outputGainSlider.addKeyListener(this);
+
+    // Adjusts the input/output gains if "Link Gains" is checked
+    inputGainSlider.onValueChange = [this] {
+        if (linkGainsToggle.getToggleState()) {
+            outputGainSlider.setValue(-inputGainSlider.getValue());
+        }
+    };
+
+    outputGainSlider.onValueChange = [this] {
+        if (linkGainsToggle.getToggleState()) {
+            inputGainSlider.setValue(-outputGainSlider.getValue());
+        }
+    };
 
     setSize(475, 580);
 }
@@ -92,6 +111,11 @@ void SetekhAudioProcessorEditor::resized() {
     // Drive knob at top center
     int driveY = 75;
     driveSlider.setBounds(centerX - driveKnobSize / 2, driveY, driveKnobSize, driveKnobSize);
+
+    // Link Gains toggle below drive knob
+    int linkGainsToggleWidth = 100;
+    int linkGainsToggleHeight = 30;
+    linkGainsToggle.setBounds(centerX - linkGainsToggleWidth / 2, driveY + driveKnobSize + 10, linkGainsToggleWidth, linkGainsToggleHeight);
 
     int sliderWidth = 80;
     int sliderHeight = 420;

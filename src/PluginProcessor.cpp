@@ -24,6 +24,9 @@ AudioProcessorValueTreeState::ParameterLayout SetekhAudioProcessor::createParams
     // Bypass toggle
     params.push_back(std::make_unique<juce::AudioParameterBool>("bypass", "Bypass", false));
 
+    // Link Gains toggle
+    params.push_back(std::make_unique<juce::AudioParameterBool>("linkGains", "Link Gains", false));
+
     return {params.begin(), params.end()};
 }
 
