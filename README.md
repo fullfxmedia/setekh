@@ -59,4 +59,13 @@ The `make.sh` script is also present and may provide a simplified build method. 
 
 The code appears to follow standard JUCE/C++ conventions. UI components seem to be styled using custom LookAndFeel (`LNF`) classes, and I will follow this pattern for any new UI work.
 
+# License
+
+This project is licensed under the GNU General Public License v3.0. See [LICENSE](LICENSE).
+
+### Third-Party Components
+
+- **JUCE**: JUCE framework is licensed under the GNU GPL v3. See [JUCE License](https://juce.com/legal/juce-6-licence) for more information.
+- **Roboto Font**: Copyright © Google. Licensed under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0). See the [Roboto font repository](https://github.com/googlefonts/roboto) for more information.
+
 ---
