@@ -66,6 +66,12 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
             inputGainSlider.setValue(-outputGainSlider.getValue());
         }
     };
+    
+    linkGainsToggle.onStateChange = [this] {
+        if (linkGainsToggle.getToggleState()) {
+            outputGainSlider.setValue(-inputGainSlider.getValue());
+        }
+    };
 
     setSize(475, 580);
 }
