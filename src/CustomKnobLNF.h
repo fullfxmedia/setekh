@@ -14,6 +14,9 @@ public:
                           float sliderPosProportional, float rotaryStartAngle,
                           float rotaryEndAngle, juce::Slider& slider) override;
 
+    juce::BorderSize<int> getLabelBorderSize(juce::Label&) override;
+    juce::Label* createSliderTextBox(juce::Slider& slider) override;
+
 private:
     juce::Image knobImage;
     int numFrames;

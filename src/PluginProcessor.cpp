@@ -15,7 +15,7 @@ AudioProcessorValueTreeState::ParameterLayout SetekhAudioProcessor::createParams
     std::vector<std::unique_ptr<RangedAudioParameter> > params;
 
     // Drive knob
-    params.push_back(std::make_unique<AudioParameterFloat>("drive", "Drive", 0.0f, 5.0f, 1.0f));
+    params.push_back(std::make_unique<AudioParameterFloat>("drive", "Drive", 0.0f, 5.0f, 0));
 
     // Add input/output gain parameters
     params.push_back(std::make_unique<juce::AudioParameterFloat>("inputGain", "Input Gain",juce::NormalisableRange<float>(-24.0f, 24.0f), 0.0f,
@@ -26,7 +26,7 @@ AudioProcessorValueTreeState::ParameterLayout SetekhAudioProcessor::createParams
     juce::AudioParameterFloatAttributes().withStringFromValueFunction([](float value, int) {
         return juce::String(value, 1);
     })));
-  
+
     // Bypass toggle
     params.push_back(std::make_unique<juce::AudioParameterBool>("bypass", "Bypass", false));
 

@@ -31,3 +31,18 @@ void CustomKnobLNF::drawRotarySlider(juce::Graphics& g, int x, int y, int width,
     }
 }
 
+juce::BorderSize<int> CustomKnobLNF::getLabelBorderSize(juce::Label&)
+{
+    return juce::BorderSize<int>(0);
+}
+
+juce::Label* CustomKnobLNF::createSliderTextBox(juce::Slider& slider)
+{
+    auto* l = new juce::Label();
+    l->setJustificationType(juce::Justification::centred);
+    l->setColour(juce::Label::textColourId, slider.findColour(juce::Slider::textBoxTextColourId));
+    l->setColour(juce::Label::backgroundColourId, juce::Colours::transparentBlack);
+    l->setColour(juce::Label::outlineColourId, juce::Colours::transparentBlack);
+    l->setFont(juce::Font("Arial", 30.0f, juce::Font::bold));
+    return l;
+}

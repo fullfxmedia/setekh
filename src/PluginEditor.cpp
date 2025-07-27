@@ -7,15 +7,27 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
       outputGainAttachment(p.apvts, "outputGain", outputGainSlider) {
 
     driveSlider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
-    driveSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 60, 20);
+    driveSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 80, 30);
+    driveSlider.setRange(0.0, 5.0, 0.01);
+    driveSlider.setNumDecimalPlacesToDisplay(0);
     customKnobLNF = std::make_unique<CustomKnobLNF>();
     driveSlider.setLookAndFeel(customKnobLNF.get());
+
+    // Display a range of 0-100 from the drives underlying value of 0-5
+    driveSlider.textFromValueFunction = [](double value) {
+        int displayValue = static_cast<int>(std::round((value / 5.0) * 100.0));
+        return juce::String(displayValue);
+    };
+    driveSlider.valueFromTextFunction = [](const juce::String& text) {
+        double displayValue = text.getDoubleValue();
+        return (displayValue / 100.0) * 5.0;
+    };
+    driveSlider.updateText();
 
     // Set up input gain slider
     inputGainSlider.setSliderStyle(juce::Slider::LinearVertical);
     inputGainSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 20);
     inputGainSlider.setRange(-24.0, 24.0, 0.1);
-    inputGainSlider.setNumDecimalPlacesToDisplay(1);
     inputGainSlider.setValue(0.0);
     inputGainLNF.setSliderType(CustomSliderLNF::SliderType::InputGain);
     inputGainSlider.setLookAndFeel(&inputGainLNF);
@@ -25,7 +37,6 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     outputGainSlider.setSliderStyle(juce::Slider::LinearVertical);
     outputGainSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 20);
     outputGainSlider.setRange(-24.0, 24.0, 0.1);
-    outputGainSlider.setNumDecimalPlacesToDisplay(1);
     outputGainSlider.setValue(0.0);
     outputGainLNF.setSliderType(CustomSliderLNF::SliderType::OutputGain);
     outputGainSlider.setLookAndFeel(&outputGainLNF);
@@ -101,13 +112,12 @@ void SetekhAudioProcessorEditor::paint(juce::Graphics &g) {
 
     // "SETEKH" label
     g.setColour(juce::Colours::white);
-    g.setFont(juce::Font("Helvetica", 24.0f, juce::Font::bold));
+    g.setFont(juce::Font("Arial", 24.0f, juce::Font::bold));
     g.drawText("SETEKH", 15, 10, 200, 30, juce::Justification::left);
 }
 
 void SetekhAudioProcessorEditor::resized() {
     int width = getWidth();
-    int height = getHeight();
 
     // Knob sizes
     int driveKnobSize = 250;
