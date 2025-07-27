@@ -18,7 +18,7 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     // Set up input gain slider
     inputGainSlider.setSliderStyle(juce::Slider::LinearVertical);
     inputGainSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 20);
-    inputGainSlider.setRange(-60.0, 12.0, 0.1);
+    inputGainSlider.setRange(-24.0, 24.0, 0.1);
     inputGainSlider.setValue(0.0);
 
     // Configure and apply input gain look and feel
@@ -29,7 +29,7 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     // Set up output gain slider
     outputGainSlider.setSliderStyle(juce::Slider::LinearVertical);
     outputGainSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 20);
-    outputGainSlider.setRange(-60.0, 12.0, 0.1);
+    outputGainSlider.setRange(-24.0, 24.0, 0.1);
     outputGainSlider.setValue(0.0);
 
     // Configure and apply output gain look and feel

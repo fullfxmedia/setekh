@@ -26,6 +26,14 @@ public:
     // Method to set which slider type this instance should render
     void setSliderType(SliderType type);
 
+    void drawLinearSliderThumb(juce::Graphics& g,
+                            int x, int y, int width, int height,
+                            float sliderPos,
+                            float minSliderPos,
+                            float maxSliderPos,
+                            const juce::Slider::SliderStyle style,
+                            juce::Slider& slider) override;
+
 private:
     SliderType currentSliderType = InputGain;
 
@@ -33,9 +41,4 @@ private:
     juce::Image gainSliderThumbImage;
     juce::Image inputSliderImage;
     juce::Image outputSliderImage;
-
-    // Helper method for fallback thumb drawing
-    void drawSimpleThumb(juce::Graphics& g, int x, int y, int width, int height,
-                        float sliderPos, float minSliderPos, float maxSliderPos,
-                        const juce::Slider::SliderStyle style);
 };
