@@ -22,7 +22,7 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     inputGainSlider.setValue(0.0);
 
     // Configure and apply input gain look and feel
-    inputGainLNF.setSliderType(CustomSliderLNF::InputGain);
+    inputGainLNF.setSliderType(CustomSliderLNF::SliderType::InputGain);
     inputGainSlider.setLookAndFeel(&inputGainLNF);
     addAndMakeVisible(inputGainSlider);
 
@@ -33,7 +33,7 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     outputGainSlider.setValue(0.0);
 
     // Configure and apply output gain look and feel
-    outputGainLNF.setSliderType(CustomSliderLNF::OutputGain);
+    outputGainLNF.setSliderType(CustomSliderLNF::SliderType::OutputGain);
     outputGainSlider.setLookAndFeel(&outputGainLNF);
     addAndMakeVisible(outputGainSlider);
 

@@ -26,15 +26,16 @@ public:
     // Method to set which slider type this instance should render
     void setSliderType(SliderType type);
 
-    // Method to load filmstrip images
-    void loadFilmstripImages();
-
 private:
     SliderType currentSliderType = InputGain;
-    juce::Image inputGainFilmstrip;
-    juce::Image outputGainFilmstrip;
-    static constexpr int numFrames = 128;
 
-    // Helper method to get the appropriate image for current slider type
-    const juce::Image& getCurrentFilmstrip() const;
+    // Images
+    juce::Image gainSliderThumbImage;
+    juce::Image inputSliderImage;
+    juce::Image outputSliderImage;
+
+    // Helper method for fallback thumb drawing
+    void drawSimpleThumb(juce::Graphics& g, int x, int y, int width, int height,
+                        float sliderPos, float minSliderPos, float maxSliderPos,
+                        const juce::Slider::SliderStyle style);
 };
