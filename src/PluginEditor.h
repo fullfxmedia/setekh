@@ -25,6 +25,7 @@ private:
     juce::Slider driveSlider, inputGainSlider, outputGainSlider;
 
     juce::ToggleButton bypassToggle, linkGainsToggle;
+    juce::Label linkLabel;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> bypassAttachment, linkGainsAttachment;
 
     // Look and Feel objects

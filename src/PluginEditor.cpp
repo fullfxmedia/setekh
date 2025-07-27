@@ -42,9 +42,24 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     outputGainSlider.setLookAndFeel(&outputGainLNF);
     addAndMakeVisible(outputGainSlider);
 
+    auto roboto = juce::Typeface::createSystemTypefaceFor(
+        BinaryData::RobotoRegular_ttf,
+        BinaryData::RobotoRegular_ttfSize
+    );
+
+    juce::Font robotoFont(roboto);
+
     // Link Gains toggle
+    linkLabel.setText("LINK", juce::dontSendNotification);
+    linkLabel.setFont(juce::Font(roboto));
+    linkLabel.setFont(linkLabel.getFont().withHeight(20.0f).withStyle(juce::Font::plain));
+    linkLabel.setJustificationType(juce::Justification::centred);
+    linkLabel.setColour(juce::Label::textColourId, juce::Colours::white);
+    linkLabel.setColour(juce::Label::backgroundColourId, juce::Colours::transparentBlack);
+    addAndMakeVisible(linkLabel);
+
     linkGainsAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(p.apvts, "linkGains", linkGainsToggle);
-    linkGainsToggle.setButtonText("Link Gains");
+    linkGainsToggle.setButtonText(juce::String()); // Remove text from toggle itself
     linkGainsToggle.setColour(juce::ToggleButton::textColourId, juce::Colours::white);
     addAndMakeVisible(linkGainsToggle);
 
@@ -128,10 +143,17 @@ void SetekhAudioProcessorEditor::resized() {
     int driveY = 75;
     driveSlider.setBounds(centerX - driveKnobSize / 2, driveY, driveKnobSize, driveKnobSize);
 
-    // Link Gains toggle below drive knob
-    int linkGainsToggleWidth = 100;
-    int linkGainsToggleHeight = 30;
-    linkGainsToggle.setBounds(centerX - linkGainsToggleWidth / 2, driveY + driveKnobSize + 10, linkGainsToggleWidth, linkGainsToggleHeight);
+    // Center horizontally: label above the checkbox, both centered as a group
+    int groupWidth = 100; // width of the widest element (label or checkbox)
+    int labelWidth = 100;
+    int labelHeight = 28;
+    int checkBoxWidth = 28;
+    int checkBoxHeight = 28;
+    int groupX = centerX - groupWidth / 2;
+    int groupY = driveY + driveKnobSize + 40;
+
+    linkLabel.setBounds(groupX, groupY, labelWidth, labelHeight);
+    linkGainsToggle.setBounds(centerX - checkBoxWidth / 2, groupY + labelHeight + 4, checkBoxWidth, checkBoxHeight);
 
     int sliderWidth = 80;
     int sliderHeight = 420;

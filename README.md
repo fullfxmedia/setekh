@@ -18,6 +18,20 @@ cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="
 cmake --build ./build --config Release
 ```
 
+Clean target:
+
+```bash
+cmake --build ./build --target clean --config Release
+```
+
+Refresh BinaryData/resources folder:
+```bash
+cd build
+cmake ..
+make clean
+make
+```
+
 ## Mockup
 
 <img src="docs/mockup.png" alt="drawing" width="400"/>
