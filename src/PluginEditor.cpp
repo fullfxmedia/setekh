@@ -155,11 +155,11 @@ void SetekhAudioProcessorEditor::resized() {
     linkLabel.setBounds(groupX, groupY, labelWidth, labelHeight);
     linkGainsToggle.setBounds(centerX - checkBoxWidth / 2, groupY + labelHeight + 4, checkBoxWidth, checkBoxHeight);
 
-    int sliderWidth = 80;
+    int sliderWidth = 120;
     int sliderHeight = 420;
     int sliderY = topBarHeight + 20;
-    int inputGainSliderX = 30;
-    int outputGainSliderX = width - sliderWidth - 30;
+    int inputGainSliderX = 10;
+    int outputGainSliderX = width - sliderWidth - 10;
 
     inputGainSlider.setBounds(inputGainSliderX, sliderY, sliderWidth, sliderHeight);
     outputGainSlider.setBounds(outputGainSliderX, sliderY, sliderWidth, sliderHeight);

@@ -3,6 +3,7 @@
 //
 
 #include "CustomSliderLNF.h"
+#include "BinaryData.h"
 
 CustomSliderLNF::CustomSliderLNF()
 {
@@ -48,6 +49,41 @@ void CustomSliderLNF::drawLinearSlider(juce::Graphics& g, int x, int y, int widt
         const float barHeight = (float)(trackY + trackHeight) - barTop;
 
         g.fillRoundedRectangle((float)trackX, barTop, (float)trackWidth, barHeight, 4.0f);
+
+        // Draw labels
+        auto roboto = juce::Typeface::createSystemTypefaceFor(
+            BinaryData::RobotoRegular_ttf,
+            BinaryData::RobotoRegular_ttfSize
+        );
+        g.setFont(juce::Font(roboto));
+        g.setFont(12.0f);
+        g.setColour(juce::Colours::white);
+
+        const float labels[] = { -24.0f, -12.0f, 0.0f, 12.0f, 24.0f };
+        const int numLabels = sizeof(labels) / sizeof(labels[0]);
+
+        for (int i = 0; i < numLabels; ++i)
+        {
+            float value = labels[i];
+            float normalizedLabelValue = (value - (float)slider.getMinimum()) / ((float)slider.getMaximum() - (float)slider.getMinimum());
+            float labelY = trackY + (1.0f - normalizedLabelValue) * trackHeight;
+
+            juce::String labelText = juce::String(value, 0) + "db";
+
+            int textWidth = g.getCurrentFont().getStringWidth(labelText);
+            int labelX;
+
+            if (currentSliderType == InputGain)
+            {
+                labelX = trackX - textWidth - 15;
+            }
+            else // OutputGain
+            {
+                labelX = trackX + trackWidth + 15;
+            }
+
+            g.drawText(labelText, labelX, (int)labelY - 6, textWidth, 12, juce::Justification::centredLeft);
+        }
     }
     else // Horizontal
     {
