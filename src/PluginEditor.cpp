@@ -47,12 +47,9 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
         BinaryData::RobotoRegular_ttfSize
     );
 
-    juce::Font robotoFont(roboto);
-
     // Link Gains toggle
     linkLabel.setText("LINK", juce::dontSendNotification);
-    linkLabel.setFont(juce::Font(roboto));
-    linkLabel.setFont(linkLabel.getFont().withHeight(20.0f).withStyle(juce::Font::plain));
+    linkLabel.setFont(juce::Font(roboto).withHeight(20.0f).withStyle(juce::Font::plain));
     linkLabel.setJustificationType(juce::Justification::centred);
     linkLabel.setColour(juce::Label::textColourId, juce::Colours::white);
     linkLabel.setColour(juce::Label::backgroundColourId, juce::Colours::transparentBlack);

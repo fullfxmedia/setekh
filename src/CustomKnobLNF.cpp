@@ -7,6 +7,9 @@
 CustomKnobLNF::CustomKnobLNF() {
     knobImage = juce::ImageCache::getFromMemory(BinaryData::drive_knob_png, BinaryData::drive_knob_pngSize);
     numFrames = 128;
+
+    auto typeface = juce::Typeface::createSystemTypefaceFor(BinaryData::RobotoRegular_ttf, BinaryData::RobotoRegular_ttfSize);
+    robotoFont = juce::Font(typeface).withHeight(30.0f).withStyle(juce::Font::bold);
 }
 
 void CustomKnobLNF::drawRotarySlider(juce::Graphics& g, int x, int y, int width, int height,
@@ -30,7 +33,7 @@ void CustomKnobLNF::drawRotarySlider(juce::Graphics& g, int x, int y, int width,
                     frameWidth, frameHeight);
 
         g.setColour(juce::Colours::white);
-        g.setFont(juce::Font("Arial", 30.0f, juce::Font::bold));
+        g.setFont(robotoFont);
         juce::String text = slider.getTextFromValue(slider.getValue());
         g.drawText(text, destX, destY, scaledWidth, scaledHeight, juce::Justification::centred);
     }

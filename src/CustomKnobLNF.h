@@ -19,4 +19,5 @@ public:
 private:
     juce::Image knobImage;
     int numFrames;
+    juce::Font robotoFont;
 };
