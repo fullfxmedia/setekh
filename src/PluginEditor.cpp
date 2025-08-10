@@ -7,7 +7,7 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
       outputGainAttachment(p.apvts, "outputGain", outputGainSlider) {
 
     driveSlider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
-    driveSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 80, 30);
+    driveSlider.setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
     driveSlider.setRange(0.0, 5.0, 0.01);
     driveSlider.setNumDecimalPlacesToDisplay(0);
     customKnobLNF = std::make_unique<CustomKnobLNF>();
