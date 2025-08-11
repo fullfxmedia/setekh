@@ -4,6 +4,7 @@
 
 #include "CustomKnobLNF.h"
 #include "CustomSliderLNF.h"
+#include "CustomToggleLNF.h"
 #include "PluginProcessor.h"
 
 class SetekhAudioProcessorEditor : public juce::AudioProcessorEditor, public juce::KeyListener {
@@ -30,6 +31,8 @@ private:
 
     // Look and Feel objects
     std::unique_ptr<CustomKnobLNF> customKnobLNF;
+    std::unique_ptr<CustomToggleLNF> bypassToggleLNF;
+    std::unique_ptr<CustomToggleLNF> linkGainsToggleLNF;
     CustomSliderLNF inputGainLNF;
     CustomSliderLNF outputGainLNF;
 

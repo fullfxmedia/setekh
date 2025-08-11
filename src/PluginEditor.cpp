@@ -56,13 +56,16 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     addAndMakeVisible(linkLabel);
 
     linkGainsAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(p.apvts, "linkGains", linkGainsToggle);
-    linkGainsToggle.setButtonText(juce::String()); // Remove text from toggle itself
+    linkGainsToggle.setButtonText(juce::String());
+    linkGainsToggleLNF = std::make_unique<CustomToggleLNF>();
+    linkGainsToggle.setLookAndFeel(linkGainsToggleLNF.get());
     linkGainsToggle.setColour(juce::ToggleButton::textColourId, juce::Colours::white);
     addAndMakeVisible(linkGainsToggle);
 
     // Bypass toggle
     bypassAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(p.apvts, "bypass", bypassToggle);
-    bypassToggle.setButtonText("Bypass");
+    bypassToggleLNF = std::make_unique<CustomToggleLNF>();
+    bypassToggle.setLookAndFeel(bypassToggleLNF.get());
     bypassToggle.setColour(juce::ToggleButton::textColourId, juce::Colours::white);
 
     // Show all sliders
@@ -164,7 +167,7 @@ void SetekhAudioProcessorEditor::resized() {
     inputGainSlider.setBounds(inputGainSliderX, sliderY, sliderWidth, sliderHeight);
     outputGainSlider.setBounds(outputGainSliderX, sliderY, sliderWidth, sliderHeight);
 
-    // Bypass toggle (unchanged)
+    // Bypass toggle
     int bypassWidth = 80;
     int bypassHeight = 30;
     int bypassX = width - bypassWidth - 15;
