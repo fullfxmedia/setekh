@@ -13,6 +13,12 @@ CustomSliderLNF::CustomSliderLNF()
                                                          BinaryData::output_slider_pngSize);
     gainSliderThumbImage = juce::ImageCache::getFromMemory(BinaryData::gain_slider_png,
                                                           BinaryData::gain_slider_pngSize);
+
+    auto typeface = juce::Typeface::createSystemTypefaceFor(BinaryData::PlusJakartaSansVariableFont_wght_ttf, BinaryData::PlusJakartaSansVariableFont_wght_ttfSize);
+    juce::FontOptions options;
+    options = options.withTypeface(typeface);
+    options = options.withHeight(24.0f);
+    labelFont = juce::Font(options);
 }
 
 CustomSliderLNF::~CustomSliderLNF()
@@ -22,6 +28,28 @@ CustomSliderLNF::~CustomSliderLNF()
 void CustomSliderLNF::setSliderType(SliderType type)
 {
     currentSliderType = type;
+}
+
+juce::Font CustomSliderLNF::getLabelFont (juce::Label& label)
+{
+    return labelFont;
+}
+
+void CustomSliderLNF::drawLabel (juce::Graphics& g, juce::Label& label)
+{
+    // Fill background (optional)
+    g.fillAll (label.findColour (juce::Label::backgroundColourId));
+
+    // Set font
+    g.setFont (getLabelFont(label));
+    g.setColour (label.findColour (juce::Label::textColourId));
+
+    // Draw the text
+    auto textArea = label.getBorderSize().subtractedFrom (label.getLocalBounds());
+    g.drawFittedText (label.getText(), textArea,
+                      label.getJustificationType(),
+                      juce::jmax (1, (int) ((float) textArea.getHeight() / label.getFont().getHeight())),
+                      label.getMinimumHorizontalScale());
 }
 
 void CustomSliderLNF::drawLinearSlider(juce::Graphics& g, int x, int y, int width, int height,
@@ -49,14 +77,6 @@ void CustomSliderLNF::drawLinearSlider(juce::Graphics& g, int x, int y, int widt
         const float barHeight = (float)(trackY + trackHeight) - barTop;
 
         g.fillRoundedRectangle((float)trackX, barTop, (float)trackWidth, barHeight, 4.0f);
-
-        // Draw labels
-        auto roboto = juce::Typeface::createSystemTypefaceFor(
-            BinaryData::RobotoRegular_ttf,
-            BinaryData::RobotoRegular_ttfSize
-        );
-        g.setFont(juce::Font(roboto));
-        g.setFont(12.0f);
         g.setColour(juce::Colours::white);
 
         const float labels[] = { -24.0f, -12.0f, 0.0f, 12.0f, 24.0f };
