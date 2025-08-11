@@ -96,7 +96,7 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
         }
     };
 
-    setSize(475, 580);
+    setSize(475, 525);
 }
 
 bool SetekhAudioProcessorEditor::keyPressed(const juce::KeyPress &key, juce::Component *originatingComponent)
