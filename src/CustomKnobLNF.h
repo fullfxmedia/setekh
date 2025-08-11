@@ -14,10 +14,8 @@ public:
                           float sliderPosProportional, float rotaryStartAngle,
                           float rotaryEndAngle, juce::Slider& slider) override;
 
-    
-
 private:
     juce::Image knobImage;
     int numFrames;
-    juce::Font robotoFont;
+    juce::Font labelFont;
 };
