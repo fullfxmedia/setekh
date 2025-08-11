@@ -25,6 +25,11 @@ jobs:
           tar -xzvf cmake-4.0.2-linux-x86_64.tar.gz
           sudo cp -r cmake-4.0.2-linux-x86_64/* /usr/local/
 
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt-get install libx11-dev libfreetype-dev libfontconfig1-dev libasound2-dev libxrandr-dev libxinerama-dev libxcursor-dev
+
       - name: Generate Build Files
         run: |
           cmake -G "Unix Makefiles" -DBUILD_STANDALONE=OFF -DCMAKE_BUILD_TYPE=Release -S . -B ./build
