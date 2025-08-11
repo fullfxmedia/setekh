@@ -2,7 +2,8 @@ name: Build
 
 on:
   push:
-    branches-ignore: ['main']
+    branches:
+      - '*'
 
 env:
   BUILD_TYPE: Release
