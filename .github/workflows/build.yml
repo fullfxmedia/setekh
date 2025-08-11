@@ -17,10 +17,13 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Install Dependencies
+      - name: Install latest CMake
         run: |
-          sudo apt update
-          sudo apt-get install libx11-dev libfreetype-dev libfontconfig1-dev libasound2-dev libxrandr-dev libxinerama-dev libxcursor-dev
+          sudo apt-get update
+          sudo apt-get install -y wget
+          wget https://github.com/Kitware/CMake/releases/download/v4.0.2/cmake-4.0.2-linux-x86_64.tar.gz
+          tar -xzvf cmake-4.0.2-linux-x86_64.tar.gz
+          sudo cp -r cmake-4.0.2-linux-x86_64/* /usr/local/
 
       - name: Generate Build Files
         run: |
