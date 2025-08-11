@@ -40,7 +40,5 @@ private:
 
     // Images
     juce::Image gainSliderThumbImage;
-    juce::Image inputSliderImage;
-    juce::Image outputSliderImage;
     juce::Font labelFont;
 };
