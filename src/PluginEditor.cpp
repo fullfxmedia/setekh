@@ -124,7 +124,10 @@ void SetekhAudioProcessorEditor::paint(juce::Graphics &g) {
 
     // "SETEKH" label
     g.setColour(juce::Colours::white);
-    g.setFont(juce::Font("Arial", 24.0f, juce::Font::bold));
+    auto bungeeTypeface = juce::Typeface::createSystemTypefaceFor(BinaryData::BungeeRegular_ttf, BinaryData::BungeeRegular_ttfSize);
+    juce::Font bungeeFont(bungeeTypeface);
+    bungeeFont.setHeight(36.0f);
+    g.setFont(bungeeFont);
     g.drawText("SETEKH", 15, 10, 200, 30, juce::Justification::left);
 }
 
