@@ -73,5 +73,7 @@ This project is licensed under the GNU General Public License v3.0. See [LICENSE
 
 - **JUCE**: JUCE framework is licensed under the GNU GPL v3. See [JUCE License](https://juce.com/legal/juce-6-licence) for more information.
 - **Roboto Font**: Copyright © Google. Licensed under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0). See the [Roboto font repository](https://github.com/googlefonts/roboto) for more information.
+- **Bungee Font**: Copyright © 2023, Bungee. Licensed under the [SIL Open Font License, Version 1.1](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL_web). See the [Bungee font repository](https://github.com/google/fonts/tree/main/ofl/bungee)
+- **PlusJakartaSans Font**: Copyright © 2023, PlusJakartaSans. Licensed under the [SIL Open Font License, Version 1.1](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL_web). See the [PlusJakartaSans font repository](https://github.com/google/fonts/tree/main/ofl/plusjakartasans)
 
 ---
