@@ -7,12 +7,14 @@
 
 CustomSliderLNF::CustomSliderLNF()
 {
-    inputSliderImage = juce::ImageCache::getFromMemory(BinaryData::input_slider_png,
-                                                    BinaryData::input_slider_pngSize);
-    outputSliderImage = juce::ImageCache::getFromMemory(BinaryData::output_slider_png,
-                                                         BinaryData::output_slider_pngSize);
     gainSliderThumbImage = juce::ImageCache::getFromMemory(BinaryData::gain_slider_png,
                                                           BinaryData::gain_slider_pngSize);
+
+    auto typeface = juce::Typeface::createSystemTypefaceFor(BinaryData::PlusJakartaSansVariableFont_wght_ttf, BinaryData::PlusJakartaSansVariableFont_wght_ttfSize);
+    juce::FontOptions options;
+    options = options.withTypeface(typeface);
+    options = options.withHeight(24.0f);
+    labelFont = juce::Font(options);
 }
 
 CustomSliderLNF::~CustomSliderLNF()
@@ -24,6 +26,28 @@ void CustomSliderLNF::setSliderType(SliderType type)
     currentSliderType = type;
 }
 
+juce::Font CustomSliderLNF::getLabelFont (juce::Label& label)
+{
+    return labelFont;
+}
+
+void CustomSliderLNF::drawLabel (juce::Graphics& g, juce::Label& label)
+{
+    // Fill background (optional)
+    g.fillAll (label.findColour (juce::Label::backgroundColourId));
+
+    // Set font
+    g.setFont (getLabelFont(label));
+    g.setColour (label.findColour (juce::Label::textColourId));
+
+    // Draw the text
+    auto textArea = label.getBorderSize().subtractedFrom (label.getLocalBounds());
+    g.drawFittedText (label.getText(), textArea,
+                      label.getJustificationType(),
+                      juce::jmax (1, (int) ((float) textArea.getHeight() / label.getFont().getHeight())),
+                      label.getMinimumHorizontalScale());
+}
+
 void CustomSliderLNF::drawLinearSlider(juce::Graphics& g, int x, int y, int width, int height,
                                       float sliderPos, float minSliderPos, float maxSliderPos,
                                       const juce::Slider::SliderStyle style,
@@ -31,7 +55,7 @@ void CustomSliderLNF::drawLinearSlider(juce::Graphics& g, int x, int y, int widt
 {
     if (style == juce::Slider::LinearVertical)
     {
-        const int thumbHeight = 56;
+        const int thumbHeight = 40;
         const int halfThumbHeight = thumbHeight / 2;
         const int trackWidth = 8; // Make the slider track narrower
 
@@ -49,14 +73,6 @@ void CustomSliderLNF::drawLinearSlider(juce::Graphics& g, int x, int y, int widt
         const float barHeight = (float)(trackY + trackHeight) - barTop;
 
         g.fillRoundedRectangle((float)trackX, barTop, (float)trackWidth, barHeight, 4.0f);
-
-        // Draw labels
-        auto roboto = juce::Typeface::createSystemTypefaceFor(
-            BinaryData::RobotoRegular_ttf,
-            BinaryData::RobotoRegular_ttfSize
-        );
-        g.setFont(juce::Font(roboto));
-        g.setFont(12.0f);
         g.setColour(juce::Colours::white);
 
         const float labels[] = { -24.0f, -12.0f, 0.0f, 12.0f, 24.0f };
@@ -109,40 +125,20 @@ void CustomSliderLNF::drawLinearSliderThumb(juce::Graphics& g, int x, int y, int
     {
         const int thumbWidth = gainSliderThumbImage.getWidth();
         const int thumbHeight = gainSliderThumbImage.getHeight();
+        const int halfThumbHeight = thumbHeight / 2;
+        const double normalizedValue = (slider.getValue() - slider.getMinimum()) / (slider.getMaximum() - slider.getMinimum());
+        const double invertedNormalizedValue = 1.0 - normalizedValue;
 
-        if (style == juce::Slider::LinearVertical)
-        {
-            const int halfThumbHeight = thumbHeight / 2;
-            const double normalizedValue = (slider.getValue() - slider.getMinimum()) / (slider.getMaximum() - slider.getMinimum());
-            const double invertedNormalizedValue = 1.0 - normalizedValue;
+        const int trackY = y + halfThumbHeight;
+        const int trackHeight = height - thumbHeight;
 
-            const int trackY = y + halfThumbHeight;
-            const int trackHeight = height - thumbHeight;
-            
-            const int thumbCenterY = trackY + (int)(invertedNormalizedValue * trackHeight);
-            
-            const int thumbX = x + (width - thumbWidth) / 2;
-            const int thumbY = thumbCenterY - halfThumbHeight;
+        const int thumbCenterY = trackY + (int)(invertedNormalizedValue * trackHeight);
 
-            g.setImageResamplingQuality(Graphics::highResamplingQuality);
-            g.drawImageAt(gainSliderThumbImage, thumbX, thumbY);
-        }
-        else // Horizontal
-        {
-            const int halfThumbWidth = thumbWidth / 2;
-            const double normalizedValue = (slider.getValue() - slider.getMinimum()) / (slider.getMaximum() - slider.getMinimum());
+        const int thumbX = x + (width - thumbWidth) / 2;
+        const int thumbY = thumbCenterY - halfThumbHeight;
 
-            const int trackX = x + halfThumbWidth;
-            const int trackWidth = width - thumbWidth;
-
-            const int thumbCenterX = trackX + (int)(normalizedValue * trackWidth);
-            
-            const int thumbX = thumbCenterX - halfThumbWidth;
-            const int thumbY = y + (height - thumbHeight) / 2;
-
-            g.setImageResamplingQuality(Graphics::highResamplingQuality);
-            g.drawImageAt(gainSliderThumbImage, thumbX, thumbY);
-        }
+        g.setImageResamplingQuality(Graphics::highResamplingQuality);
+        g.drawImageAt(gainSliderThumbImage, thumbX, thumbY);
     }
     else
     {

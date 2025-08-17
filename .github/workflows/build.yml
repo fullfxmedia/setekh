@@ -2,35 +2,39 @@ name: Build
 
 on:
   push:
-    branches-ignore: ['main']
+    branches:
+      - '**'
 
 env:
   BUILD_TYPE: Release
 
 jobs:
-  macos-universal-build:
-    runs-on: macos-latest
+  build:
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      - name: Upgrade CMake
+      - name: Install latest CMake
         run: |
-          brew update
-          brew install cmake
-          cmake --version
+          sudo apt-get update
+          sudo apt-get install -y wget
+          wget https://github.com/Kitware/CMake/releases/download/v4.0.2/cmake-4.0.2-linux-x86_64.tar.gz
+          tar -xzvf cmake-4.0.2-linux-x86_64.tar.gz
+          sudo cp -r cmake-4.0.2-linux-x86_64/* /usr/local/
 
-      - name: Create Build Environment
-        run: cmake -E make_directory ${{github.workspace}}/build
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt-get install libx11-dev libfreetype-dev libfontconfig1-dev libasound2-dev libxrandr-dev libxinerama-dev libxcursor-dev
 
-      - name: Configure CMake
-        shell: bash
-        working-directory: ${{github.workspace}}/build
-        run: cmake $GITHUB_WORKSPACE -G "Xcode"
+      - name: Generate Build Files
+        run: |
+          cmake -G "Unix Makefiles" -DBUILD_STANDALONE=OFF -DCMAKE_BUILD_TYPE=Release -S . -B ./build
 
-      - name: Build
-        working-directory: ${{github.workspace}}/build
-        shell: bash
-        run: cmake --build . --config $BUILD_TYPE
+      - name: Build Project
+        run: |
+          cmake --build ./build --config Release

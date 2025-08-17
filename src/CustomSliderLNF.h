@@ -23,6 +23,10 @@ public:
                          const juce::Slider::SliderStyle style,
                          juce::Slider& slider) override;
 
+    juce::Font getLabelFont (juce::Label& label) override;
+
+    void drawLabel (juce::Graphics& g, juce::Label& label) override;
+
     // Method to set which slider type this instance should render
     void setSliderType(SliderType type);
 
@@ -36,6 +40,5 @@ private:
 
     // Images
     juce::Image gainSliderThumbImage;
-    juce::Image inputSliderImage;
-    juce::Image outputSliderImage;
+    juce::Font labelFont;
 };

@@ -7,10 +7,16 @@
 CustomKnobLNF::CustomKnobLNF() {
     knobImage = juce::ImageCache::getFromMemory(BinaryData::drive_knob_png, BinaryData::drive_knob_pngSize);
     numFrames = 128;
+
+    auto typeface = juce::Typeface::createSystemTypefaceFor(BinaryData::PlusJakartaSansVariableFont_wght_ttf, BinaryData::PlusJakartaSansVariableFont_wght_ttfSize);
+    juce::FontOptions options;
+    options = options.withTypeface(typeface);
+    options = options.withHeight(40.0f);
+    labelFont = juce::Font(options);
 }
 
 void CustomKnobLNF::drawRotarySlider(juce::Graphics& g, int x, int y, int width, int height,
-                                     float sliderPosProportional, float, float, juce::Slider&) {
+                                     float sliderPosProportional, float, float, juce::Slider& slider) {
     if (knobImage.isValid()) {
         int frameWidth = knobImage.getWidth();
         int frameHeight = knobImage.getHeight() / numFrames;
@@ -28,21 +34,11 @@ void CustomKnobLNF::drawRotarySlider(juce::Graphics& g, int x, int y, int width,
                     destX, destY, scaledWidth, scaledHeight,
                     0, frameIndex * frameHeight,
                     frameWidth, frameHeight);
+
+        g.setColour(juce::Colours::white);
+        g.setFont(labelFont);
+        juce::String text = slider.getTextFromValue(slider.getValue());
+        g.drawText(text, destX, destY, scaledWidth, scaledHeight, juce::Justification::centred);
     }
 }
 
-juce::BorderSize<int> CustomKnobLNF::getLabelBorderSize(juce::Label&)
-{
-    return juce::BorderSize<int>(0);
-}
-
-juce::Label* CustomKnobLNF::createSliderTextBox(juce::Slider& slider)
-{
-    auto* l = new juce::Label();
-    l->setJustificationType(juce::Justification::centred);
-    l->setColour(juce::Label::textColourId, slider.findColour(juce::Slider::textBoxTextColourId));
-    l->setColour(juce::Label::backgroundColourId, juce::Colours::transparentBlack);
-    l->setColour(juce::Label::outlineColourId, juce::Colours::transparentBlack);
-    l->setFont(juce::Font("Arial", 30.0f, juce::Font::bold));
-    return l;
-}

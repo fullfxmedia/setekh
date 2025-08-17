@@ -2,11 +2,13 @@
 
 A minimalistic yet sonically powerful distortion plugin created and distributed via Full FX Media.
 
-This is a C++ audio plugin project utilizing the JUCE framework. The build system is CMake.
+This is a C++ audio plugin project utilizing the JUCE framework. The build system is CMake. Licensed under GPL.
 
 ## About
 
 [Set](<https://en.wikipedia.org/wiki/Set_(deity)>) is a god of deserts, storms, disorder, violence, and foreigners in ancient Egyptian religion
+
+<img src="docs/setekh_screenshot.png" alt="drawing" width="600"/>
 
 ## Build
 
@@ -31,10 +33,6 @@ cmake ..
 make clean
 make
 ```
-
-## Mockup
-
-<img src="docs/mockup.png" alt="drawing" width="400"/>
 
 ---
 
