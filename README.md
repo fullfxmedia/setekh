@@ -6,11 +6,24 @@ This is a C++ audio plugin project utilizing the JUCE framework. The build syste
 
 ## About
 
-[Set](<https://en.wikipedia.org/wiki/Set_(deity)>) is a god of deserts, storms, disorder, violence, and foreigners in ancient Egyptian religion
+[Setekh](<https://en.wikipedia.org/wiki/Set_(deity)>) is a god of deserts, storms, disorder, violence, and foreigners in ancient Egyptian religion.
 
 <img src="docs/setekh_screenshot.png" alt="drawing" width="600"/>
 
-## Build
+## Downloads
+
+Prebuilt binaries are available for Windows, macOS, and Linux.  
+You can always find the latest release here:
+
+- [Latest Release](https://github.com/fullfxmedia/setekh/releases/latest)
+
+Each release includes platform-specific zip files. Extract the zip file to a directory of your choice, and you will find the plugin files ready for use in your DAW:
+
+- [Windows](https://github.com/fullfxmedia/setekh/releases/latest/download/setekh-win.zip)
+- [macOS](https://github.com/fullfxmedia/setekh/releases/latest/download/setekh-macos.zip)
+- [Linux](https://github.com/fullfxmedia/setekh/releases/latest/download/setekh-linux.zip)
+
+## Building from Source
 
 ```bash
 git clone --recurse-submodules https://github.com/tiagolr/ripplerx.git
