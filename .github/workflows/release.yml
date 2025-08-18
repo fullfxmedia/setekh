@@ -51,7 +51,7 @@ jobs:
         with:
           p12-file-base64: ${{ secrets.APPLE_CERT_P12 }}
           p12-password: ${{ secrets.APPLE_CERT_PASSWORD }}
-          keychain: signing_application.keychain
+          keychain: signing_application
 
       - name: Code Sign
         env:
@@ -65,7 +65,7 @@ jobs:
         with:
           p12-file-base64: ${{ secrets.APPLE_INSTALLER_P12 }}
           p12-password: ${{ secrets.APPLE_CERT_PASSWORD }}
-          keychain: signing_installer.keychain
+          keychain: signing_installer
 
       - name: Create PKG installer
         env:
