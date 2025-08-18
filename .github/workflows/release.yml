@@ -21,6 +21,12 @@ jobs:
         with:
           submodules: recursive
 
+#      - name: Get version from tag
+#        if: startsWith(github.ref, 'refs/tags/')
+#        run: |
+#          VERSION=${GITHUB_REF#refs/tags/}   # strips "refs/tags/"
+#          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
       - name: Upgrade CMake
         run: |
           brew update
@@ -46,54 +52,39 @@ jobs:
           p12-file-base64: ${{ secrets.APPLE_CERT_P12 }}
           p12-password: ${{ secrets.APPLE_CERT_PASSWORD }}
 
-      - name: Code Sign VST3
+      - name: Code Sign
         env:
           APPLE_TEAM_ID_STR: ${{ secrets.APPLE_TEAM_ID_STR }}
         run: |
-          codesign --deep --strict --options=runtime --force --verify --verbose \
-            --sign "$APPLE_TEAM_ID_STR" ./build/Setekh_artefacts/Release/VST3/Setekh.vst3
+          codesign --deep --strict --options=runtime --force --verify --verbose --sign "$APPLE_TEAM_ID_STR" ./build/Setekh_artefacts/Release/VST3/Setekh.vst3
+          codesign --deep --strict --options=runtime --force --verify --verbose --sign "$APPLE_TEAM_ID_STR" ./build/Setekh_artefacts/Release/AU/Setekh.component
 
-      - name: Code Sign AU
+      - name: Create PKG installer
         env:
           APPLE_TEAM_ID_STR: ${{ secrets.APPLE_TEAM_ID_STR }}
         run: |
-          codesign --deep --strict --options=runtime --force --verify --verbose \
-            --sign "$APPLE_TEAM_ID_STR" ./build/Setekh_artefacts/Release/AU/Setekh.component
+          mkdir -p build/pkgroot/Library/Audio/Plug-Ins/VST3
+          mkdir -p build/pkgroot/Library/Audio/Plug-Ins/Components
+          cp build/Setekh_artefacts/Release/*.vst3 build/pkgroot/Library/Audio/Plug-Ins/VST3/
+          cp build/Setekh_artefacts/Release/*.component build/pkgroot/Library/Audio/Plug-Ins/Components/
+          pkgbuild --root build/pkgroot --identifier com.fullfxmedia.setekh --version 1.0.0 --install-location / build/Setekh.pkg
+          productbuild --package build/Setekh.pkg --sign $APPLE_TEAM_ID_STR build/Setekh-Installer.pkg
 
-      - name: Notarize VST3 + AU
-        env:
-          APPLE_ID_EMAIL: ${{ secrets.APPLE_ID_EMAIL }}
-          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      - name: Notarize & Staple PKG
         run: |
-          # Zip both plugins together for notarization
-          zip -r Setekh_plugins.zip \
-            ./build/Setekh_artefacts/Release/VST3/Setekh.vst3 \
-            ./build/Setekh_artefacts/Release/AU/Setekh.component
-
-          # Submit to Apple for notarization and wait
-          xcrun notarytool submit Setekh_plugins.zip \
-            --apple-id "$APPLE_ID_EMAIL" \
-            --team-id "$APPLE_TEAM_ID" \
-            --password "$APPLE_ID_PASSWORD" \
+          xcrun notarytool submit build/Setekh-Installer-1.0.0.pkg \
+            --apple-id "${{ secrets.APPLE_ID_EMAIL }}" \
+            --team-id "${{ secrets.APPLE_TEAM_ID }}" \
+            --password "${{ secrets.APPLE_ID_PASSWORD }}" \
             --wait
-
-          # Staple each plugin individually & Verify
-          xcrun stapler staple ./build/Setekh_artefacts/Release/VST3/Setekh.vst3
-          xcrun stapler staple ./build/Setekh_artefacts/Release/AU/Setekh.component
-          spctl -a -vv ./build/Setekh_artefacts/Release/VST3/Setekh.vst3
-          spctl -a -vv ./build/Setekh_artefacts/Release/AU/Setekh.component
+          xcrun stapler staple build/Setekh-Installer-1.0.0.pkg
+          spctl --assess --type install --verbose build/Setekh-Installer-1.0.0.pkg
 
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
           name: setekh-macos
-          path: |
-            ./build/Setekh_artefacts/Release/AU
-            ./build/Setekh_artefacts/Release/VST3
-            ./build/Setekh_artefacts/Release/readme.txt
-            !./build/Setekh_artefacts/Release/VST3/*.exp
-            !./build/Setekh_artefacts/Release/VST3/*.lib
+          path: build/Setekh-Installer-*.pkg
 
 #  windows-build:
 #    runs-on: windows-latest
