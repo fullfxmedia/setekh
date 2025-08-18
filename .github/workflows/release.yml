@@ -50,14 +50,14 @@ jobs:
         env:
           APPLE_TEAM_ID_STR: ${{ secrets.APPLE_TEAM_ID_STR }}
         run: |
-          codesign --deep --force --verify --verbose \
+          codesign --deep --strict --options=runtime --force --verify --verbose \
             --sign "$APPLE_TEAM_ID_STR" ./build/Setekh_artefacts/Release/VST3/Setekh.vst3
 
       - name: Code Sign AU
         env:
           APPLE_TEAM_ID_STR: ${{ secrets.APPLE_TEAM_ID_STR }}
         run: |
-          codesign --deep --force --verify --verbose \
+          codesign --deep --strict --options=runtime --force --verify --verbose \
             --sign "$APPLE_TEAM_ID_STR" ./build/Setekh_artefacts/Release/AU/Setekh.component
 
       - name: Notarize VST3 + AU
