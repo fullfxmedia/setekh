@@ -15,9 +15,6 @@ jobs:
     runs-on: macos-latest
 
     env:
-      APPLE_CERT_P12: ${{ secrets.APPLE_CERT_P12 }}
-      APPLE_CERT_PASSWORD: ${{ secrets.APPLE_CERT_PASSWORD }}
-      KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
       APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
 
     steps:
@@ -44,26 +41,11 @@ jobs:
         shell: bash
         run: cmake --build . --config $BUILD_TYPE
 
-      - name: Setup Keychain & Import Certificate
-        run: |
-          # Decode P12
-          echo $APPLE_CERT_P12 | base64 --decode > cert.p12
-          
-          # Create temporary keychain
-          security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
-          
-          # Import certificate
-          security import cert.p12 -k build.keychain -P "$APPLE_CERT_PASSWORD" -T /usr/bin/codesign
-          
-          # Add keychain to search path
-          security list-keychains -s build.keychain /Library/Keychains/System.keychain ~/Library/Keychains/login.keychain-db
-          
-          # Unlock keychain
-          security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
-          security set-keychain-settings -t 3600 -l build.keychain
-          
-          # Verify codesigning identities
-          security find-identity -v -p codesigning
+      - name: Import Code Signing Certificates
+        uses: apple-actions/import-codesign-certs@v1
+        with:
+          p12-file-base64: ${{ secrets.APPLE_CERT_P12 }}
+          p12-password: ${{ secrets.APPLE_CERT_PASSWORD }}
 
       - name: Code Sign VST3
         run: |
