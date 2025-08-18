@@ -79,7 +79,7 @@ jobs:
             --identifier com.fullfxmedia.setekh \
             --version 1.0.0 \
             --install-location / \
-            --sign APPLE_INSTALLER_STR \
+            --sign $APPLE_INSTALLER_STR \
             build/Setekh-1.0.0.pkg
 
       - name: Notarize & Staple PKG
