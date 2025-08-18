@@ -80,7 +80,6 @@ jobs:
             --version 1.0.0 \
             --install-location / \
             --sign "$APPLE_INSTALLER_STR" \
-            --title "Setekh Installer" \
             build/Setekh-1.0.0.pkg
 
       - name: Notarize & Staple PKG
