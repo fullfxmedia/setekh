@@ -1,9 +1,9 @@
 name: Build
 
-on:
-  push:
-    branches:
-      - '**'
+#on:
+#  push:
+#    branches:
+#      - '**'
 
 env:
   BUILD_TYPE: Release
