@@ -46,11 +46,12 @@ jobs:
         shell: bash
         run: cmake --build . --config $BUILD_TYPE
 
-      - name: Import Code Signing Certificates
+      - name: Import Application Certificates
         uses: apple-actions/import-codesign-certs@v1
         with:
           p12-file-base64: ${{ secrets.APPLE_CERT_P12 }}
           p12-password: ${{ secrets.APPLE_CERT_PASSWORD }}
+          keychain: signing_application.keychain
 
       - name: Code Sign
         env:
@@ -64,6 +65,7 @@ jobs:
         with:
           p12-file-base64: ${{ secrets.APPLE_INSTALLER_P12 }}
           p12-password: ${{ secrets.APPLE_CERT_PASSWORD }}
+          keychain: signing_installer.keychain
 
       - name: Create PKG installer
         env:
