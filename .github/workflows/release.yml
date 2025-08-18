@@ -73,9 +73,9 @@ jobs:
 
           # Submit to Apple for notarization and wait
           xcrun notarytool submit Setekh_plugins.zip \
-            --apple-id "APPLE_ID_EMAIL" \
+            --apple-id "$APPLE_ID_EMAIL" \
             --team-id "$APPLE_TEAM_ID" \
-            --password "APPLE_ID_PASSWORD" \
+            --password "$APPLE_ID_PASSWORD" \
             --wait
 
           # Staple each plugin individually & Verify
