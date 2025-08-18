@@ -59,9 +59,15 @@ jobs:
           codesign --deep --strict --options=runtime --force --verify --verbose --sign "$APPLE_TEAM_ID_STR" ./build/Setekh_artefacts/Release/VST3/Setekh.vst3
           codesign --deep --strict --options=runtime --force --verify --verbose --sign "$APPLE_TEAM_ID_STR" ./build/Setekh_artefacts/Release/AU/Setekh.component
 
+      - name: Import Installer Certificate
+        uses: apple-actions/import-codesign-certs@v1
+        with:
+          p12-file-base64: ${{ secrets.APPLE_INSTALLER_P12 }}
+          p12-password: ${{ secrets.APPLE_CERT_PASSWORD }}
+
       - name: Create PKG installer
         env:
-          APPLE_TEAM_ID_STR: ${{ secrets.APPLE_TEAM_ID_STR }}
+          APPLE_INSTALLER_STR: ${{ secrets.APPLE_INSTALLER_STR }}
         run: |
           mkdir -p build/pkgroot/Library/Audio/Plug-Ins/VST3
           mkdir -p build/pkgroot/Library/Audio/Plug-Ins/Components
@@ -71,7 +77,7 @@ jobs:
             --identifier com.fullfxmedia.setekh \
             --version 1.0.0 \
             --install-location / \
-            --sign $APPLE_TEAM_ID_STR \
+            --sign APPLE_INSTALLER_STR \
             build/Setekh-1.0.0.pkg
 
       - name: Notarize & Staple PKG
