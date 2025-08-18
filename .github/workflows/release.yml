@@ -2,8 +2,10 @@ name: Release
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - main
+#    tags:
+#      - 'v*'
 
 env:
   BUILD_TYPE: Release
@@ -11,6 +13,12 @@ env:
 jobs:
   macos-universal-build:
     runs-on: macos-latest
+
+    env:
+      APPLE_CERT_P12: ${{ secrets.APPLE_CERT_P12 }}
+      APPLE_CERT_PASSWORD: ${{ secrets.APPLE_CERT_PASSWORD }}
+      KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
 
     steps:
       - uses: actions/checkout@v2
@@ -36,12 +44,30 @@ jobs:
         shell: bash
         run: cmake --build . --config $BUILD_TYPE
 
+      - name: Setup Keychain & Import Certificate
+        run: |
+          echo $APPLE_CERT_P12 | base64 --decode > cert.p12
+          security create-keychain -p $KEYCHAIN_PASSWORD build.keychain
+          security import cert.p12 -k build.keychain -P $APPLE_CERT_PASSWORD -T /usr/bin/codesign
+          security list-keychains -s build.keychain
+          security unlock-keychain -p $KEYCHAIN_PASSWORD build.keychain
+          security set-keychain-settings -t 3600 -l build.keychain
+
+      - name: Code Sign VST3
+        run: |
+          codesign --deep --force --verify --verbose \
+            --sign "$APPLE_TEAM_ID" ./build/Setekh_artefacts/Release/VST3/Setekh.vst3
+
+      - name: Code Sign AU
+        run: |
+          codesign --deep --force --verify --verbose \
+            --sign "$APPLE_TEAM_ID" ./build/Setekh_artefacts/Release/AU/Setekh.component
+
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
           name: setekh-macos
           path: |
-            ./build/Setekh_artefacts/Release/LV2
             ./build/Setekh_artefacts/Release/AU
             ./build/Setekh_artefacts/Release/VST3
             ./build/Setekh_artefacts/Release/readme.txt
@@ -72,7 +98,6 @@ jobs:
         with:
           name: setekh-windows
           path: |
-            ./build/Setekh_artefacts/Release/LV2
             ./build/Setekh_artefacts/Release/VST3
             ./build/Setekh_artefacts/Release/readme.txt
             !./build/Setekh_artefacts/Release/VST3/*.exp
