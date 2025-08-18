@@ -65,8 +65,8 @@ jobs:
         run: |
           mkdir -p build/pkgroot/Library/Audio/Plug-Ins/VST3
           mkdir -p build/pkgroot/Library/Audio/Plug-Ins/Components
-          cp build/Setekh_artefacts/Release/VST3/Setekh.vst3 build/pkgroot/Library/Audio/Plug-Ins/VST3/
-          cp build/Setekh_artefacts/Release/AU/Setekh.component build/pkgroot/Library/Audio/Plug-Ins/Components/
+          cp -R build/Setekh_artefacts/Release/VST3/Setekh.vst3 build/pkgroot/Library/Audio/Plug-Ins/VST3/
+          cp -R build/Setekh_artefacts/Release/AU/Setekh.component build/pkgroot/Library/Audio/Plug-Ins/Components/
           pkgbuild --root build/pkgroot --identifier com.fullfxmedia.setekh --version 1.0.0 --install-location / build/Setekh.pkg
           productbuild --package build/Setekh.pkg --sign $APPLE_TEAM_ID_STR build/Setekh-Installer.pkg
 
