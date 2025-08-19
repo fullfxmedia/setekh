@@ -2,12 +2,8 @@ name: Release
 
 on:
   push:
-    branches:
-      - '**'
-#on:
-#  push:
-#    tags:
-#      - 'v*'
+    tags:
+      - 'v*'
 
 env:
   BUILD_TYPE: Release
@@ -21,11 +17,11 @@ jobs:
         with:
           submodules: recursive
 
-#      - name: Get version from tag
-#        if: startsWith(github.ref, 'refs/tags/')
-#        run: |
-#          VERSION=${GITHUB_REF#refs/tags/}   # strips "refs/tags/"
-#          echo "VERSION=$VERSION" >> $GITHUB_ENV
+      - name: Get version from tag
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Upgrade CMake
         run: |
@@ -77,20 +73,20 @@ jobs:
           cp -R build/Setekh_artefacts/Release/AU/Setekh.component build/pkgroot/Library/Audio/Plug-Ins/Components/
           pkgbuild --root build/pkgroot \
             --identifier com.fullfxmedia.setekh \
-            --version 1.0.0 \
+            --version $VERSION \
             --install-location / \
             --sign "$APPLE_INSTALLER_STR" \
-            build/Setekh-1.0.0.pkg
+            build/Setekh-$VERSION.pkg
 
       - name: Notarize & Staple PKG
         run: |
-          xcrun notarytool submit build/Setekh-1.0.0.pkg \
+          xcrun notarytool submit build/Setekh-$VERSION.pkg \
             --apple-id "${{ secrets.APPLE_ID_EMAIL }}" \
             --team-id "${{ secrets.APPLE_TEAM_ID }}" \
             --password "${{ secrets.APPLE_ID_PASSWORD }}" \
             --wait
-          xcrun stapler staple build/Setekh-1.0.0.pkg
-          spctl --assess --type install --verbose build/Setekh-1.0.0.pkg
+          xcrun stapler staple build/Setekh-$VERSION.pkg
+          spctl --assess --type install --verbose build/Setekh-$VERSION.pkg
 
       - name: Upload
         uses: actions/upload-artifact@v4
@@ -98,119 +94,119 @@ jobs:
           name: setekh-macos
           path: build/Setekh-*.pkg
 
-#  windows-build:
-#    runs-on: windows-latest
-#
-#    steps:
-#      - uses: actions/checkout@v2
-#        with:
-#          submodules: recursive
-#
-#      - name: Upgrade CMake
-#        run: |
-#          choco install cmake --version=4.0.2 --force --yes
-#          cmake --version
-#
-#      - name: Configure
-#        run: cmake -G "Visual Studio 17 2022" -DBUILD_STANDALONE=OFF -DCMAKE_BUILD_TYPE=$env:BUILD_TYPE -S . -B ./build
-#
-#      - name: Build
-#        run: cmake --build ./build --config $env:BUILD_TYPE
-#
-#      - name: Upload
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: setekh-windows
-#          path: |
-#            ./build/Setekh_artefacts/Release/VST3
-#            ./build/Setekh_artefacts/Release/readme.txt
-#            !./build/Setekh_artefacts/Release/VST3/*.exp
-#            !./build/Setekh_artefacts/Release/VST3/*.lib
-#            !./build/Setekh_artefacts/Release/LV2/*.exp
-#            !./build/Setekh_artefacts/Release/LV2/*.lib
-#
-#  linux-build:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v2
-#        with:
-#          submodules: recursive
-#
-#      - name: Install build deps
-#        run: |
-#          sudo apt-get update
-#          sudo apt-get install libx11-dev libfreetype-dev libfontconfig1-dev libasound2-dev libxrandr-dev libxinerama-dev libxcursor-dev
-#
-#      - name: Upgrade CMake
-#        run: |
-#          sudo apt-get update
-#          sudo apt-get install -y wget
-#          wget https://github.com/Kitware/CMake/releases/download/v4.0.2/cmake-4.0.2-linux-x86_64.tar.gz
-#          tar -xzf cmake-4.0.2-linux-x86_64.tar.gz
-#          sudo cp -r cmake-4.0.2-linux-x86_64/* /usr/local/
-#          cmake --version
-#
-#      - name: Configure
-#        run: cmake -G "Unix Makefiles" -DBUILD_STANDALONE=OFF -DCMAKE_BUILD_TYPE=$BUILD_TYPE -S . -B ./build
-#
-#      - name: Build
-#        run: cmake --build ./build --config $BUILD_TYPE
-#
-#      - name: Upload
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: setekh-linux
-#          path: |
-#            ./build/Setekh_artefacts/Release/LV2
-#            ./build/Setekh_artefacts/Release/VST3
-#            ./build/Setekh_artefacts/Release/readme.txt
-#            !./build/Setekh_artefacts/Release/VST3/*.exp
-#            !./build/Setekh_artefacts/Release/VST3/*.lib
-#
-#  package-release:
-#    runs-on: ubuntu-latest
-#    permissions:
-#      contents: write
-#    needs: [windows-build, macos-universal-build, linux-build]
-#    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
-#    strategy:
-#      matrix:
-#        os: [ windows, macos, linux ]
-#    steps:
-#      - name: Download ${{ matrix.os }} artifact
-#        uses: actions/download-artifact@v4
-#        with:
-#          name: setekh-${{ matrix.os }}
-#          path: artifacts/setekh-${{ matrix.os }}
-#
-#      - name: Zip ${{ matrix.os }} artifact
-#        run: |
-#          TAG_NAME=${GITHUB_REF#refs/tags/}
-#          cd artifacts
-#          zip -r setekh-${{ matrix.os }}-${TAG_NAME}.zip setekh-${{ matrix.os }}
-#
-#      - name: Upload zipped artifact
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: setekh-${{ matrix.os }}-zipped
-#          path: artifacts/setekh-${{ matrix.os }}-*.zip
-#
-#  release:
-#    runs-on: ubuntu-latest
-#    permissions:
-#      contents: write
-#    needs: package-release
-#    steps:
-#      - name: Download zipped artifacts
-#        uses: actions/download-artifact@v4
-#        with:
-#          path: artifacts
-#
-#      - name: Create Release
-#        uses: softprops/action-gh-release@v2
-#        with:
-#          draft: true
-#          tag_name: ${{ github.ref_name }}
-#          files: artifacts/**/*.zip
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  windows-build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Upgrade CMake
+        run: |
+          choco install cmake --version=4.0.2 --force --yes
+          cmake --version
+
+      - name: Configure
+        run: cmake -G "Visual Studio 17 2022" -DBUILD_STANDALONE=OFF -DCMAKE_BUILD_TYPE=$env:BUILD_TYPE -S . -B ./build
+
+      - name: Build
+        run: cmake --build ./build --config $env:BUILD_TYPE
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: setekh-windows
+          path: |
+            ./build/Setekh_artefacts/Release/VST3
+            ./build/Setekh_artefacts/Release/readme.txt
+            !./build/Setekh_artefacts/Release/VST3/*.exp
+            !./build/Setekh_artefacts/Release/VST3/*.lib
+            !./build/Setekh_artefacts/Release/LV2/*.exp
+            !./build/Setekh_artefacts/Release/LV2/*.lib
+
+  linux-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Install build deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install libx11-dev libfreetype-dev libfontconfig1-dev libasound2-dev libxrandr-dev libxinerama-dev libxcursor-dev
+
+      - name: Upgrade CMake
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget
+          wget https://github.com/Kitware/CMake/releases/download/v4.0.2/cmake-4.0.2-linux-x86_64.tar.gz
+          tar -xzf cmake-4.0.2-linux-x86_64.tar.gz
+          sudo cp -r cmake-4.0.2-linux-x86_64/* /usr/local/
+          cmake --version
+
+      - name: Configure
+        run: cmake -G "Unix Makefiles" -DBUILD_STANDALONE=OFF -DCMAKE_BUILD_TYPE=$BUILD_TYPE -S . -B ./build
+
+      - name: Build
+        run: cmake --build ./build --config $BUILD_TYPE
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: setekh-linux
+          path: |
+            ./build/Setekh_artefacts/Release/LV2
+            ./build/Setekh_artefacts/Release/VST3
+            ./build/Setekh_artefacts/Release/readme.txt
+            !./build/Setekh_artefacts/Release/VST3/*.exp
+            !./build/Setekh_artefacts/Release/VST3/*.lib
+
+  package-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs: [windows-build, macos-universal-build, linux-build]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    strategy:
+      matrix:
+        os: [ windows, macos, linux ]
+    steps:
+      - name: Download ${{ matrix.os }} artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: setekh-${{ matrix.os }}
+          path: artifacts/setekh-${{ matrix.os }}
+
+      - name: Zip ${{ matrix.os }} artifact
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          cd artifacts
+          zip -r setekh-${{ matrix.os }}-${TAG_NAME}.zip setekh-${{ matrix.os }}
+
+      - name: Upload zipped artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: setekh-${{ matrix.os }}-zipped
+          path: artifacts/setekh-${{ matrix.os }}-*.zip
+
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs: package-release
+    steps:
+      - name: Download zipped artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          tag_name: ${{ github.ref_name }}
+          files: artifacts/**/*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
