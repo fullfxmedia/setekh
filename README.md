@@ -4,6 +4,8 @@ A minimalistic yet sonically powerful distortion plugin created and distributed 
 
 This is a C++ audio plugin project utilizing the JUCE framework. The build system is CMake. Licensed under GPL.
 
+See [Full FX Media](https://fullfxmedia.com/) for more information and plugins.
+
 ## About
 
 [Setekh](<https://en.wikipedia.org/wiki/Set_(deity)>) is a god of deserts, storms, disorder, violence, and foreigners in ancient Egyptian religion.
