@@ -104,7 +104,7 @@ jobs:
 
       - name: Upgrade CMake
         run: |
-          choco install cmake --version=4.0.2 --force --yes
+          choco install cmake --version=3.22.5 --force --yes
           cmake --version
 
       - name: Configure
@@ -141,9 +141,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y wget
-          wget https://github.com/Kitware/CMake/releases/download/v4.0.2/cmake-4.0.2-linux-x86_64.tar.gz
-          tar -xzf cmake-4.0.2-linux-x86_64.tar.gz
-          sudo cp -r cmake-4.0.2-linux-x86_64/* /usr/local/
+          wget https://github.com/Kitware/CMake/releases/download/v3.22.5/cmake-3.22.5-linux-x86_64.tar.gz
+          tar -xzf cmake-3.22.5-linux-x86_64.tar.gz
+          sudo cp -r cmake-3.22.5-linux-x86_64/* /usr/local/
           cmake --version
 
       - name: Configure

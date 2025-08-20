@@ -24,9 +24,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y wget
-          wget https://github.com/Kitware/CMake/releases/download/v4.0.2/cmake-4.0.2-linux-x86_64.tar.gz
-          tar -xzvf cmake-4.0.2-linux-x86_64.tar.gz
-          sudo cp -r cmake-4.0.2-linux-x86_64/* /usr/local/
+          wget https://github.com/Kitware/CMake/releases/download/v3.22.5/cmake-3.22.5-linux-x86_64.tar.gz
+          tar -xzvf cmake-3.22.5-linux-x86_64.tar.gz
+          sudo cp -r cmake-3.22.5-linux-x86_64/* /usr/local/
 
       - name: Install Dependencies
         run: |
