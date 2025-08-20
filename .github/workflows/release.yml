@@ -137,15 +137,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install libx11-dev libfreetype-dev libfontconfig1-dev libasound2-dev libxrandr-dev libxinerama-dev libxcursor-dev
 
-      - name: Upgrade CMake
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wget
-          wget https://github.com/Kitware/CMake/releases/download/v3.22.5/cmake-3.22.5-linux-x86_64.tar.gz
-          tar -xzf cmake-3.22.5-linux-x86_64.tar.gz
-          sudo cp -r cmake-3.22.5-linux-x86_64/* /usr/local/
-          cmake --version
-
       - name: Configure
         run: cmake -G "Unix Makefiles" -DBUILD_STANDALONE=OFF -DCMAKE_BUILD_TYPE=$BUILD_TYPE -S . -B ./build
 
