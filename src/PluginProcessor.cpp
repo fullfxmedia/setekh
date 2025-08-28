@@ -101,15 +101,18 @@ void SetekhAudioProcessor::changeProgramName(int, const juce::String &) {
 }
 
 void SetekhAudioProcessor::getStateInformation(juce::MemoryBlock &destData) {
-    // Save plugin state here
-    juce::MemoryOutputStream stream(destData, true);
-    // stream.writeFloat(someValue);
+    auto state = apvts.copyState();
+    std::unique_ptr<juce::XmlElement> xml(state.createXml());
+    copyXmlToBinary(*xml, destData);
 }
 
 void SetekhAudioProcessor::setStateInformation(const void *data, int sizeInBytes) {
-    // Restore plugin state here
-    juce::MemoryInputStream stream(data, static_cast<size_t>(sizeInBytes), false);
-    // someValue = stream.readFloat();
+    std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+
+    if (xmlState != nullptr)
+    {
+        apvts.replaceState(juce::ValueTree::fromXml(*xmlState));
+    }
 }
 
 // Required factory function
