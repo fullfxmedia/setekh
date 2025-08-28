@@ -1,11 +1,11 @@
 #include "PluginEditor.h"
 
 SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
-    : AudioProcessorEditor(&p),
-      driveAttachment(p.apvts, "drive", driveSlider),
-      inputGainAttachment(p.apvts, "inputGain", inputGainSlider),
-      outputGainAttachment(p.apvts, "outputGain", outputGainSlider) {
+    : AudioProcessorEditor(&p) {
 
+    initializing = true;
+
+    driveAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(p.apvts, "drive", driveSlider);
     driveSlider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
     driveSlider.setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
     driveSlider.setRange(0.0, 5.0, 0.01);
@@ -25,19 +25,19 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     driveSlider.updateText();
 
     // Input gain slider
+    inputGainAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(p.apvts, "inputGain", inputGainSlider);
     inputGainSlider.setSliderStyle(juce::Slider::LinearVertical);
     inputGainSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 20);
     inputGainSlider.setRange(-24.0, 24.0, 0.1);
-    inputGainSlider.setValue(0.0);
     inputGainLNF.setSliderType(CustomSliderLNF::SliderType::InputGain);
     inputGainSlider.setLookAndFeel(&inputGainLNF);
     addAndMakeVisible(inputGainSlider);
 
     // Output gain slider
+    outputGainAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(p.apvts, "outputGain", outputGainSlider);
     outputGainSlider.setSliderStyle(juce::Slider::LinearVertical);
     outputGainSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 20);
     outputGainSlider.setRange(-24.0, 24.0, 0.1);
-    outputGainSlider.setValue(0.0);
     outputGainLNF.setSliderType(CustomSliderLNF::SliderType::OutputGain);
     outputGainSlider.setLookAndFeel(&outputGainLNF);
     addAndMakeVisible(outputGainSlider);
@@ -68,7 +68,7 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     addAndMakeVisible(linkGainsToggle);
 
     // Bypass label & toggle
-    bypassLabel.setText("BYPASS", juce::dontSendNotification);
+    bypassLabel.setText("BYPASS3", juce::dontSendNotification);
     bypassLabel.setFont(juce::Font(roboto).withHeight(20.0f).withStyle(juce::Font::plain));
     bypassLabel.setJustificationType(juce::Justification::centred);
     bypassLabel.setColour(juce::Label::textColourId, juce::Colours::white);
@@ -95,24 +95,26 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
 
     // Adjusts the input/output gains if "Link Gains" is checked
     inputGainSlider.onValueChange = [this] {
-        if (linkGainsToggle.getToggleState()) {
+        if (linkGainsToggle.getToggleState() && !initializing) {
             outputGainSlider.setValue(-inputGainSlider.getValue());
         }
     };
 
     outputGainSlider.onValueChange = [this] {
-        if (linkGainsToggle.getToggleState()) {
+        if (linkGainsToggle.getToggleState() && !initializing) {
             inputGainSlider.setValue(-outputGainSlider.getValue());
         }
     };
 
     linkGainsToggle.onStateChange = [this] {
-        if (linkGainsToggle.getToggleState()) {
+        if (linkGainsToggle.getToggleState() && !initializing) {
             outputGainSlider.setValue(-inputGainSlider.getValue());
         }
     };
 
     setSize(475, 525);
+
+    initializing = false;
 }
 
 bool SetekhAudioProcessorEditor::keyPressed(const juce::KeyPress &key, juce::Component *originatingComponent)

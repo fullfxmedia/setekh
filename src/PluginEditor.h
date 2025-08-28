@@ -22,6 +22,8 @@ public:
     bool keyPressed(const juce::KeyPress &key, juce::Component *originatingComponent) override;
 
 private:
+    bool initializing = false;
+
     int topBarHeight = 50;
     juce::Slider driveSlider, inputGainSlider, outputGainSlider;
 
@@ -36,7 +38,7 @@ private:
     CustomSliderLNF inputGainLNF;
     CustomSliderLNF outputGainLNF;
 
-    juce::AudioProcessorValueTreeState::SliderAttachment driveAttachment, inputGainAttachment, outputGainAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> driveAttachment, inputGainAttachment, outputGainAttachment;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SetekhAudioProcessorEditor)
 };
