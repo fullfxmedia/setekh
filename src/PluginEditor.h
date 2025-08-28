@@ -21,8 +21,11 @@ public:
 
     bool keyPressed(const juce::KeyPress &key, juce::Component *originatingComponent) override;
 
+    void mouseUp(const juce::MouseEvent& event) override;
+
 private:
     bool initializing = false;
+    bool splashVisible = false;
 
     int topBarHeight = 50;
     juce::Slider driveSlider, inputGainSlider, outputGainSlider;
