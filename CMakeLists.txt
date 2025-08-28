@@ -6,7 +6,11 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 option(BUILD_STANDALONE "Standalone plugin format" ON)
 
-project(Setekh VERSION 0.1.0)
+if(DEFINED ENV{VERSION})
+    set(PROJECT_VERSION $ENV{VERSION})
+else()
+    set(PROJECT_VERSION "0.1.0")
+endif()
 
 add_compile_definitions(PROJECT_VERSION="${PROJECT_VERSION}")
 set(CMAKE_CXX_STANDARD 17)
