@@ -5,6 +5,9 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
 
     initializing = true;
 
+    addAndMakeVisible(splashScreen);
+    splashScreen.setVisible(false);
+
     driveAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(p.apvts, "drive", driveSlider);
     driveSlider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
     driveSlider.setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
@@ -68,7 +71,7 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     addAndMakeVisible(linkGainsToggle);
 
     // Bypass label & toggle
-    bypassLabel.setText("BYPASS", juce::dontSendNotification);
+    bypassLabel.setText("BYPASS3", juce::dontSendNotification);
     bypassLabel.setFont(juce::Font(roboto).withHeight(20.0f).withStyle(juce::Font::plain));
     bypassLabel.setJustificationType(juce::Justification::centred);
     bypassLabel.setColour(juce::Label::textColourId, juce::Colours::white);
@@ -113,7 +116,6 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     };
 
     setSize(475, 525);
-    splashVisible = true;
 
     initializing = false;
 }
@@ -148,13 +150,6 @@ void SetekhAudioProcessorEditor::paint(juce::Graphics &g) {
     bungeeFont.setHeight(36.0f);
     g.setFont(bungeeFont);
     g.drawText("SETEKH", 15, 10, 200, 30, juce::Justification::left);
-
-    if (splashVisible)
-    {
-        g.setColour(juce::Colours::white);
-        g.setFont(48.0f);
-        g.drawText("SETEKH", getLocalBounds(), juce::Justification::centred, true);
-    }
 }
 
 void SetekhAudioProcessorEditor::resized() {
@@ -194,25 +189,17 @@ void SetekhAudioProcessorEditor::resized() {
     int bypassY = (topBarHeight - toggleHeight) / 2;
     bypassLabel.setBounds(bypassX + 95, bypassY + 15, labelWidth, labelHeight);
     bypassToggle.setBounds(bypassX, bypassY, toggleWidth, toggleHeight);
+
+    // Splash Screen
+    splashScreen.setBounds(getLocalBounds());
 }
 
 void SetekhAudioProcessorEditor::mouseUp(const juce::MouseEvent& event)
 {
-    DBG("Mouse clicked at: " << event.getPosition().toString());
-
-    auto clickPos = event.getPosition();
-    if (!splashVisible)
+    juce::Rectangle<int> logoArea(15, 10, 200, 30);
+    if (logoArea.contains(event.getPosition()))
     {
-        juce::Rectangle<int> logoArea(15, 10, 200, 30);
-        if (logoArea.contains(clickPos))
-        {
-            splashVisible = true;
-            repaint();
-        }
-    }
-    else
-    {
-        splashVisible = false;
-        repaint();
+        splashScreen.setVisible(true);
+        splashScreen.toFront(true);
     }
 }

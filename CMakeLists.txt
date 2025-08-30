@@ -6,7 +6,13 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 option(BUILD_STANDALONE "Standalone plugin format" ON)
 
-project(Setekh VERSION 0.1.0)
+if(DEFINED ENV{VERSION})
+    set(PROJECT_VERSION $ENV{VERSION})
+else()
+    set(PROJECT_VERSION "0.1.0")
+endif()
+
+project(Setekh VERSION ${PROJECT_VERSION})
 
 add_compile_definitions(PROJECT_VERSION="${PROJECT_VERSION}")
 set(CMAKE_CXX_STANDARD 17)
@@ -56,6 +62,8 @@ source_group(Source
         ${CMAKE_CURRENT_SOURCE_DIR}/src/CustomKnobLNF.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/CustomSliderLNF.h
         ${CMAKE_CURRENT_SOURCE_DIR}/src/CustomSliderLNF.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/CustomSplashScreen.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/CustomSplashScreen.cpp
 )
 
 target_sources(${PROJECT_NAME} PRIVATE ${src})

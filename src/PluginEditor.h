@@ -4,6 +4,7 @@
 
 #include "CustomKnobLNF.h"
 #include "CustomSliderLNF.h"
+#include "CustomSplashScreen.h"
 #include "CustomToggleLNF.h"
 #include "PluginProcessor.h"
 
@@ -25,9 +26,11 @@ public:
 
 private:
     bool initializing = false;
-    bool splashVisible = false;
 
     int topBarHeight = 50;
+
+    CustomSplashScreen splashScreen;
+
     juce::Slider driveSlider, inputGainSlider, outputGainSlider;
 
     juce::ToggleButton bypassToggle, linkGainsToggle;
