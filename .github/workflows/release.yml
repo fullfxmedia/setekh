@@ -23,6 +23,17 @@ jobs:
           VERSION=${GITHUB_REF#refs/tags/}
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
+      - name: Fix cmake tap conflict
+        run: |
+          # Uninstall any existing cmake (from pinned/local tap)
+          brew uninstall --ignore-dependencies cmake || true
+          
+          # Install cmake from homebrew/core
+          brew install cmake
+          
+          # Verify installation
+          cmake --version
+
       - name: Create Build Environment
         run: cmake -E make_directory ${{github.workspace}}/build
 
