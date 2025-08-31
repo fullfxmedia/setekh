@@ -9,7 +9,7 @@ option(BUILD_STANDALONE "Standalone plugin format" ON)
 if(DEFINED ENV{VERSION})
     set(PROJECT_VERSION $ENV{VERSION})
 else()
-    set(PROJECT_VERSION "0.1.0")
+    set(PROJECT_VERSION "0.0.1")
 endif()
 
 project(Setekh VERSION ${PROJECT_VERSION})

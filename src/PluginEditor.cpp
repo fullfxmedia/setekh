@@ -1,12 +1,30 @@
 #include "PluginEditor.h"
 
+#if defined(__aarch64__) || defined(_M_ARM64)
+  #define BUILD_ARCH "arm64"
+#elif defined(__x86_64__) || defined(_M_X64)
+  #define BUILD_ARCH "x64"
+#elif defined(__i386__) || defined(_M_IX86)
+  #define BUILD_ARCH "x86"
+#else
+  #define BUILD_ARCH "unknown"
+#endif
+
 SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     : AudioProcessorEditor(&p) {
 
     initializing = true;
 
-    addAndMakeVisible(splashScreen);
-    splashScreen.setVisible(false);
+    splashScreen = std::make_unique<CustomSplashScreen>(
+        JucePlugin_VersionString,
+        BUILD_ARCH
+    );
+
+    // splashScreen = std::make_unique<CustomSplashScreen>(JucePlugin_VersionString,
+    //                                                 (sizeof(void*) == 8 ? "x64" : "x86"));
+    addAndMakeVisible(*splashScreen);
+    splashScreen->setVisible(false);
+    splashScreen->setBounds(getLocalBounds());
 
     driveAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(p.apvts, "drive", driveSlider);
     driveSlider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
@@ -191,7 +209,7 @@ void SetekhAudioProcessorEditor::resized() {
     bypassToggle.setBounds(bypassX, bypassY, toggleWidth, toggleHeight);
 
     // Splash Screen
-    splashScreen.setBounds(getLocalBounds());
+    splashScreen->setBounds(getLocalBounds());
 }
 
 void SetekhAudioProcessorEditor::mouseUp(const juce::MouseEvent& event)
@@ -199,7 +217,7 @@ void SetekhAudioProcessorEditor::mouseUp(const juce::MouseEvent& event)
     juce::Rectangle<int> logoArea(15, 10, 200, 30);
     if (logoArea.contains(event.getPosition()))
     {
-        splashScreen.setVisible(true);
-        splashScreen.toFront(true);
+        splashScreen->setVisible(true);
+        splashScreen->toFront(true);
     }
 }

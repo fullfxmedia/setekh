@@ -29,7 +29,7 @@ private:
 
     int topBarHeight = 50;
 
-    CustomSplashScreen splashScreen;
+    std::unique_ptr<CustomSplashScreen> splashScreen;
 
     juce::Slider driveSlider, inputGainSlider, outputGainSlider;
 
