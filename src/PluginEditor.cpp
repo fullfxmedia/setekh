@@ -89,7 +89,7 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     addAndMakeVisible(linkGainsToggle);
 
     // Bypass label & toggle
-    bypassLabel.setText("BYPASS3", juce::dontSendNotification);
+    bypassLabel.setText("BYPASS", juce::dontSendNotification);
     bypassLabel.setFont(juce::Font(roboto).withHeight(20.0f).withStyle(juce::Font::plain));
     bypassLabel.setJustificationType(juce::Justification::centred);
     bypassLabel.setColour(juce::Label::textColourId, juce::Colours::white);
