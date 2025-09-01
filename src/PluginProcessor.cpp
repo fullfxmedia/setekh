@@ -39,9 +39,9 @@ AudioProcessorValueTreeState::ParameterLayout SetekhAudioProcessor::createParams
 SetekhAudioProcessor::~SetekhAudioProcessor() = default;
 
 void SetekhAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock) {
-    spec.sampleRate = sampleRate;
-    spec.maximumBlockSize = samplesPerBlock;
-    spec.numChannels = getTotalNumOutputChannels();
+    spec.sampleRate = static_cast<uint32>(sampleRate);
+    spec.maximumBlockSize = static_cast<uint32>(samplesPerBlock);
+    spec.numChannels = static_cast<uint32>(getTotalNumOutputChannels());
 
     highShelfBoost.reset();
     highShelfCut.reset();
@@ -49,7 +49,7 @@ void SetekhAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
     highShelfBoost.prepare(spec);
     highShelfCut.prepare(spec);
 
-    float cutoffFreq = 6000.0f;
+    float cutoffFreq = 7500.0f;
     float qValue = 0.707f;
     float gainBoost = juce::Decibels::decibelsToGain(6.0f);
     float gainCut = juce::Decibels::decibelsToGain(-6.0f);
@@ -101,7 +101,7 @@ void SetekhAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce::
         }
     }
 
-    // High shelf cut
+    // // High shelf cut
     highShelfCut.process(juce::dsp::ProcessContextReplacing(block));
 }
 
