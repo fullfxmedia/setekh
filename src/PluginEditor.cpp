@@ -19,9 +19,6 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
         JucePlugin_VersionString,
         BUILD_ARCH
     );
-
-    // splashScreen = std::make_unique<CustomSplashScreen>(JucePlugin_VersionString,
-    //                                                 (sizeof(void*) == 8 ? "x64" : "x86"));
     addAndMakeVisible(*splashScreen);
     splashScreen->setVisible(false);
     splashScreen->setBounds(getLocalBounds());
@@ -52,7 +49,7 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     inputGainSlider.setRange(-24.0, 24.0, 0.1);
     inputGainLNF.setSliderType(CustomSliderLNF::SliderType::InputGain);
     inputGainSlider.setLookAndFeel(&inputGainLNF);
-    addAndMakeVisible(inputGainSlider);
+    inputGainSlider.addKeyListener(this); // Reset on backspace
 
     // Output gain slider
     outputGainAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(p.apvts, "outputGain", outputGainSlider);
@@ -61,7 +58,7 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     outputGainSlider.setRange(-24.0, 24.0, 0.1);
     outputGainLNF.setSliderType(CustomSliderLNF::SliderType::OutputGain);
     outputGainSlider.setLookAndFeel(&outputGainLNF);
-    addAndMakeVisible(outputGainSlider);
+    outputGainSlider.addKeyListener(this); // Reset on backspace
 
     auto roboto = juce::Typeface::createSystemTypefaceFor(
         BinaryData::RobotoRegular_ttf,
@@ -79,14 +76,14 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     linkLabel.setJustificationType(juce::Justification::centred);
     linkLabel.setColour(juce::Label::textColourId, juce::Colours::white);
     linkLabel.setColour(juce::Label::backgroundColourId, juce::Colours::transparentBlack);
-    addAndMakeVisible(linkLabel);
 
-    linkGainsAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(p.apvts, "linkGains", linkGainsToggle);
-    linkGainsToggle.setButtonText(juce::String());
+    linkGainsAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(
+        p.apvts, "linkGains", linkGainsToggle
+    );
     linkGainsToggleLNF = std::make_unique<CustomToggleLNF>();
+    linkGainsToggle.setButtonText(juce::String());
     linkGainsToggle.setLookAndFeel(linkGainsToggleLNF.get());
     linkGainsToggle.setColour(juce::ToggleButton::textColourId, juce::Colours::white);
-    addAndMakeVisible(linkGainsToggle);
 
     // Bypass label & toggle
     bypassLabel.setText("BYPASS", juce::dontSendNotification);
@@ -95,41 +92,39 @@ SetekhAudioProcessorEditor::SetekhAudioProcessorEditor(SetekhAudioProcessor &p)
     bypassLabel.setColour(juce::Label::textColourId, juce::Colours::white);
     bypassLabel.setColour(juce::Label::textColourId, juce::Colours::white);
     bypassLabel.setColour(juce::Label::backgroundColourId, juce::Colours::transparentBlack);
-    addAndMakeVisible(bypassLabel);
 
-    bypassAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(p.apvts, "bypass", bypassToggle);
+    bypassAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(
+        p.apvts, "bypass", bypassToggle
+    );
     bypassToggleLNF = std::make_unique<CustomToggleLNF>();
     bypassToggle.setLookAndFeel(bypassToggleLNF.get());
     bypassToggle.setColour(juce::ToggleButton::textColourId, juce::Colours::white);
 
-    // Show all sliders
-    for (auto *comp: {&driveSlider, &inputGainSlider, &outputGainSlider}) {
-        addAndMakeVisible(*comp);
-    }
-
-    // Show bypass toggle
+    // Show all sliders and components
+    addAndMakeVisible(driveSlider);
+    addAndMakeVisible(inputGainSlider);
+    addAndMakeVisible(outputGainSlider);
     addAndMakeVisible(bypassToggle);
-
-    // Add key listener to reset slider on backspace
-    inputGainSlider.addKeyListener(this);
-    outputGainSlider.addKeyListener(this);
+    addAndMakeVisible(bypassLabel);
+    addAndMakeVisible(linkGainsToggle);
+    addAndMakeVisible(linkLabel);
 
     // Adjusts the input/output gains if "Link Gains" is checked
     inputGainSlider.onValueChange = [this] {
         if (linkGainsToggle.getToggleState() && !initializing) {
-            outputGainSlider.setValue(-inputGainSlider.getValue());
+            outputGainSlider.setValue(-inputGainSlider.getValue(), juce::dontSendNotification);
         }
     };
 
     outputGainSlider.onValueChange = [this] {
         if (linkGainsToggle.getToggleState() && !initializing) {
-            inputGainSlider.setValue(-outputGainSlider.getValue());
+            inputGainSlider.setValue(-outputGainSlider.getValue(), juce::dontSendNotification);
         }
     };
 
     linkGainsToggle.onStateChange = [this] {
         if (linkGainsToggle.getToggleState() && !initializing) {
-            outputGainSlider.setValue(-inputGainSlider.getValue());
+            outputGainSlider.setValue(-inputGainSlider.getValue(), juce::dontSendNotification);
         }
     };
 

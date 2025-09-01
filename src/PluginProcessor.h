@@ -58,5 +58,10 @@ public:
 private:
     juce::AudioProcessorValueTreeState::ParameterLayout createParams();
 
+    juce::dsp::IIR::Filter<float> highShelfBoost;
+    juce::dsp::IIR::Filter<float> highShelfCut;
+
+    juce::dsp::ProcessSpec spec;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SetekhAudioProcessor)
 };

@@ -12,12 +12,12 @@ SetekhAudioProcessor::SetekhAudioProcessor()
 }
 
 AudioProcessorValueTreeState::ParameterLayout SetekhAudioProcessor::createParams() {
-    std::vector<std::unique_ptr<RangedAudioParameter> > params;
+    std::vector<std::unique_ptr<RangedAudioParameter>> params;
 
     // Drive knob
     params.push_back(std::make_unique<AudioParameterFloat>("drive", "Drive", 0.0f, 5.0f, 0));
 
-    // Add input/output gain parameters
+    // input/output gain parameters
     params.push_back(std::make_unique<juce::AudioParameterFloat>("inputGain", "Input Gain",juce::NormalisableRange<float>(-24.0f, 24.0f), 0.0f,
     juce::AudioParameterFloatAttributes().withStringFromValueFunction([](float value, int) {
         return juce::String(value, 1);
@@ -39,6 +39,28 @@ AudioProcessorValueTreeState::ParameterLayout SetekhAudioProcessor::createParams
 SetekhAudioProcessor::~SetekhAudioProcessor() = default;
 
 void SetekhAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock) {
+    spec.sampleRate = sampleRate;
+    spec.maximumBlockSize = samplesPerBlock;
+    spec.numChannels = getTotalNumOutputChannels();
+
+    highShelfBoost.reset();
+    highShelfCut.reset();
+
+    highShelfBoost.prepare(spec);
+    highShelfCut.prepare(spec);
+
+    float cutoffFreq = 6000.0f;
+    float qValue = 0.707f;
+    float gainBoost = juce::Decibels::decibelsToGain(6.0f);
+    float gainCut = juce::Decibels::decibelsToGain(-6.0f);
+
+    auto coeffBoost = juce::dsp::IIR::Coefficients<float>::makeHighShelf(
+        sampleRate, cutoffFreq, qValue, gainBoost);
+    auto coeffCut = juce::dsp::IIR::Coefficients<float>::makeHighShelf(
+        sampleRate, cutoffFreq, qValue, gainCut);
+
+    highShelfBoost.coefficients = coeffBoost;
+    highShelfCut.coefficients = coeffCut;
 }
 
 void SetekhAudioProcessor::releaseResources() {
@@ -54,6 +76,10 @@ void SetekhAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce::
     if (bypass > 0.5f) {
         return;
     }
+
+    // High shelf boost
+    juce::dsp::AudioBlock<float> block(buffer);
+    highShelfBoost.process(juce::dsp::ProcessContextReplacing(block));
 
     auto drive = apvts.getRawParameterValue("drive")->load();
     auto inputGain = juce::Decibels::decibelsToGain(apvts.getRawParameterValue("inputGain")->load());
@@ -74,6 +100,9 @@ void SetekhAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce::
             samples[i] = wet * outputGain;
         }
     }
+
+    // High shelf cut
+    highShelfCut.process(juce::dsp::ProcessContextReplacing(block));
 }
 
 juce::AudioProcessorEditor *SetekhAudioProcessor::createEditor() {
@@ -107,10 +136,9 @@ void SetekhAudioProcessor::getStateInformation(juce::MemoryBlock &destData) {
 }
 
 void SetekhAudioProcessor::setStateInformation(const void *data, int sizeInBytes) {
-    std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+    std::unique_ptr<juce::XmlElement> xmlState (getXmlFromBinary(data, sizeInBytes));
 
-    if (xmlState != nullptr)
-    {
+    if (xmlState.get() != nullptr && xmlState->hasTagName (apvts.state.getType())) {
         apvts.replaceState(juce::ValueTree::fromXml(*xmlState));
     }
 }
