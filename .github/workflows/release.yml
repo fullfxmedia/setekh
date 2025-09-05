@@ -188,7 +188,7 @@ jobs:
           TAG_NAME=${GITHUB_REF#refs/tags/}
           cd artifacts
           if [ "${{ matrix.os }}" = "windows" ]; then
-            cp -r setekh-windows/VST3/Setekh.vst3 setekh-windows/
+            cp setekh-windows/VST3/Setekh.vst3/Contents/x86_64-win/Setekh.vst3 setekh-windows/
             zip -r setekh-windows-${TAG_NAME}.zip setekh-windows/Setekh.vst3
           elif [ "${{ matrix.os }}" = "linux" ]; then
             cp setekh-linux/VST3/Setekh.vst3/Contents/x86_64-linux/Setekh.so setekh-linux/
