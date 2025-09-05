@@ -25,13 +25,8 @@ jobs:
 
       - name: Fix cmake tap conflict
         run: |
-          # Uninstall any existing cmake (from pinned/local tap)
           brew uninstall --ignore-dependencies cmake || true
-          
-          # Install cmake from homebrew/core
           brew install cmake
-          
-          # Verify installation
           cmake --version
 
       - name: Create Build Environment
@@ -40,7 +35,7 @@ jobs:
       - name: Configure CMake
         shell: bash
         working-directory: ${{github.workspace}}/build
-        run: cmake $GITHUB_WORKSPACE -G "Xcode"
+        run: cmake $GITHUB_WORKSPACE -G "Xcode" -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
 
       - name: Build
         working-directory: ${{github.workspace}}/build
@@ -107,6 +102,13 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Get version from tag
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          $VERSION = "$env:GITHUB_REF" -replace "refs/tags/v", ""
+          echo "VERSION=$VERSION" >> $env:GITHUB_ENV
+          echo "Set VERSION to: $VERSION"
+
       - name: Upgrade CMake
         run: |
           choco install cmake --version=3.22.5 --force --yes
@@ -136,6 +138,13 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
+
+      - name: Get version from tag
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          $VERSION = "$env:GITHUB_REF" -replace "refs/tags/v", ""
+          echo "VERSION=$VERSION" >> $env:GITHUB_ENV
+          echo "Set VERSION to: $VERSION"
 
       - name: Install build deps
         run: |
@@ -179,7 +188,15 @@ jobs:
         run: |
           TAG_NAME=${GITHUB_REF#refs/tags/}
           cd artifacts
-          zip -r setekh-${{ matrix.os }}-${TAG_NAME}.zip setekh-${{ matrix.os }}
+          if [ "${{ matrix.os }}" = "windows" ]; then
+            cp -r setekh-windows/VST3/Setekh.vst3 setekh-windows/
+            zip -r setekh-windows-${TAG_NAME}.zip setekh-windows/Setekh.vst3
+          elif [ "${{ matrix.os }}" = "linux" ]; then
+            cp setekh-linux/VST3/Setekh.vst3/Contents/x86_64-linux/Setekh.so setekh-linux/
+            zip -r setekh-linux-${TAG_NAME}.zip setekh-linux/Setekh.so
+          else
+            zip -r setekh-macos-${TAG_NAME}.zip setekh-macos
+          fi
 
       - name: Upload zipped artifact
         uses: actions/upload-artifact@v4
