@@ -6,6 +6,10 @@ This is a C++ audio plugin project utilizing the JUCE framework. The build syste
 
 See [Full FX Media](https://fullfxmedia.com/) for more information and plugins.
 
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/fullfxmedia/setekh)
+![GitHub all releases](https://img.shields.io/github/downloads/fullfxmedia/setekh/total)
+![GitHub license](https://img.shields.io/github/license/fullfxmedia/setekh)
+
 ## About
 
 [Setekh](<https://en.wikipedia.org/wiki/Set_(deity)>) is a god of deserts, storms, disorder, violence, and foreigners in ancient Egyptian religion.
