@@ -35,7 +35,7 @@ jobs:
       - name: Configure CMake
         shell: bash
         working-directory: ${{github.workspace}}/build
-        run: cmake $GITHUB_WORKSPACE -G "Xcode" -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
+        run: cmake $GITHUB_WORKSPACE -G "Xcode" -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DVERSION=$VERSION
 
       - name: Build
         working-directory: ${{github.workspace}}/build
@@ -115,7 +115,7 @@ jobs:
           cmake --version
 
       - name: Configure
-        run: cmake -G "Visual Studio 17 2022" -DBUILD_STANDALONE=OFF -DCMAKE_BUILD_TYPE=$env:BUILD_TYPE -S . -B ./build
+        run: cmake -G "Visual Studio 17 2022" -DBUILD_STANDALONE=OFF -DCMAKE_BUILD_TYPE=$env:BUILD_TYPE -DVERSION=$env:VERSION -S . -B ./build
 
       - name: Build
         run: cmake --build ./build --config $env:BUILD_TYPE
@@ -151,7 +151,7 @@ jobs:
           sudo apt-get install libx11-dev libfreetype-dev libfontconfig1-dev libasound2-dev libxrandr-dev libxinerama-dev libxcursor-dev
 
       - name: Configure
-        run: cmake -G "Unix Makefiles" -DBUILD_STANDALONE=OFF -DCMAKE_BUILD_TYPE=$BUILD_TYPE -S . -B ./build
+        run: cmake -G "Unix Makefiles" -DBUILD_STANDALONE=OFF -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DVERSION=$VERSION -S . -B ./build
 
       - name: Build
         run: cmake --build ./build --config $BUILD_TYPE
