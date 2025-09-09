@@ -162,7 +162,7 @@ void SetekhAudioProcessorEditor::paint(juce::Graphics &g) {
     juce::Font bungeeFont(bungeeTypeface);
     bungeeFont.setHeight(36.0f);
     g.setFont(bungeeFont);
-    g.drawText("SETEKH", 15, 10, 200, 30, juce::Justification::left);
+    g.drawFittedText("SETEKH", 15, 10, 200, 30, juce::Justification::left, 1);
 }
 
 void SetekhAudioProcessorEditor::resized() {
