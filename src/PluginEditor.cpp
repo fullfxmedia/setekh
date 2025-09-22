@@ -156,13 +156,16 @@ void SetekhAudioProcessorEditor::paint(juce::Graphics &g) {
     g.setColour(juce::Colour(0xff2e2e2e));
     g.fillRect(0, 0, getWidth(), topBarHeight);
 
-    // "SETEKH" label
-    g.setColour(juce::Colours::white);
-    auto bungeeTypeface = juce::Typeface::createSystemTypefaceFor(BinaryData::BungeeRegular_ttf, BinaryData::BungeeRegular_ttfSize);
-    juce::Font bungeeFont(bungeeTypeface);
-    bungeeFont.setHeight(36.0f);
-    g.setFont(bungeeFont);
-    g.drawText("SETEKH", 15, 10, 200, 30, juce::Justification::left);
+    // "SETEKH" Logo
+    auto logoImage = juce::ImageCache::getFromMemory(BinaryData::setekh_logo_png, BinaryData::setekh_logo_pngSize);
+    if (logoImage.isValid())
+    {
+        int targetHeight = 30;
+        int targetWidth = (244 * targetHeight) / 72;
+        g.drawImage(logoImage, 
+                    15, 10, targetWidth, targetHeight,
+                    0, 0, 244, 72);
+    }
 }
 
 void SetekhAudioProcessorEditor::resized() {
