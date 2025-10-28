@@ -2,6 +2,8 @@ name: Build
 
 on:
   push:
+    branches-ignore:
+      - 'main'
     paths-ignore:
       - '**/README.md'
 
@@ -10,10 +12,7 @@ env:
 
 jobs:
   build:
-    runs-on: self-hosted
-    container:
-      image: ghcr.io/fullfxmedia/cpp-build-base:jammy
-      options: --user 0:0
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
