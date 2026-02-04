@@ -175,7 +175,7 @@ jobs:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
     strategy:
       matrix:
-        os: [ windows, macos, linux ]
+        os: [windows, macos, linux]
     steps:
       - name: Download ${{ matrix.os }} artifact
         uses: actions/download-artifact@v4
@@ -191,8 +191,9 @@ jobs:
             cp setekh-windows/VST3/Setekh.vst3/Contents/x86_64-win/Setekh.vst3 setekh-windows/
             zip -r setekh-windows-${TAG_NAME}.zip setekh-windows/Setekh.vst3
           elif [ "${{ matrix.os }}" = "linux" ]; then
-            cp setekh-linux/VST3/Setekh.vst3/Contents/x86_64-linux/Setekh.so setekh-linux/
-            zip -r setekh-linux-${TAG_NAME}.zip setekh-linux/Setekh.so
+            cp setekh-linux/VST3/Setekh.vst3 setekh-linux/
+            cp setekh-linux/LV2/Setekh.lv2 setekh-linux/
+            zip -r setekh-linux-${TAG_NAME}.zip setekh-linux/
           else
             zip -r setekh-macos-${TAG_NAME}.zip setekh-macos
           fi

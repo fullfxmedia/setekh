@@ -24,6 +24,7 @@ add_subdirectory(lib/JUCE)
 set(plugin_formats
   VST3
   AU
+  LV2
 )
 
 if(BUILD_STANDALONE)
@@ -44,6 +45,7 @@ juce_add_plugin(${PROJECT_NAME}
   FORMATS ${plugin_formats}
   PRODUCT_NAME "Setekh"
   PLUGIN_DESCRIPTION "A minimalistic yet sonically powerful distortion plugin"
+  LV2URI "https://fullfxmedia.com/plugins/diffusia"
   BUNDLE_ID "com.fullfxmedia.setekh"
 )
 
