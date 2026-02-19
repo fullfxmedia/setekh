@@ -22,6 +22,8 @@ Built, Signed binaries are available for download at [https://fullfxmedia.com/pl
 
 VST3, AU and CLAP formats available for Windows, macOS and Linux.
 
+The last, public release on Github will be `1.0.13`, future improvements and features will be published directly to [Full FX Media](https://fullfxmedia.com/plugins/setekh/).
+
 ## Building from Source
 
 You can compile from source by following these steps:
