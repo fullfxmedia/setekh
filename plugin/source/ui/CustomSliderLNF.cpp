@@ -2,7 +2,7 @@
 // Copyright (c) 2025 Full FX Media
 //
 
-#include "CustomSliderLNF.h"
+#include "Setekh/ui/CustomSliderLNF.h"
 #include "BinaryData.h"
 
 CustomSliderLNF::CustomSliderLNF()

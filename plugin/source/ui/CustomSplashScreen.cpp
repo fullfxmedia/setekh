@@ -2,7 +2,7 @@
 // Copyright (c) 2025 Full FX Media
 //
 
-#include "CustomSplashScreen.h"
+#include "Setekh/ui/CustomSplashScreen.h"
 
 CustomSplashScreen::CustomSplashScreen(const juce::String& versionString,
                                        const juce::String& buildArch)

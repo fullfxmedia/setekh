@@ -2,8 +2,8 @@
 // Copyright (c) 2025 Full FX Media
 //
 
-#include "PluginProcessor.h"
-#include "PluginEditor.h"
+#include "Setekh/PluginProcessor.h"
+#include "Setekh/PluginEditor.h"
 
 SetekhAudioProcessor::SetekhAudioProcessor()
     : AudioProcessor(BusesProperties().withInput("Input", juce::AudioChannelSet::stereo(), true)

@@ -2,7 +2,7 @@
 // Copyright (c) 2025 Full FX Media
 //
 
-#include "CustomToggleLNF.h"
+#include "Setekh/ui/CustomToggleLNF.h"
 
 CustomToggleLNF::CustomToggleLNF()
 {

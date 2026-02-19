@@ -2,11 +2,11 @@
 
 #include <JuceHeader.h>
 
-#include "CustomKnobLNF.h"
-#include "CustomSliderLNF.h"
-#include "CustomSplashScreen.h"
-#include "CustomToggleLNF.h"
-#include "PluginProcessor.h"
+#include "Setekh/ui/CustomKnobLNF.h"
+#include "Setekh/ui/CustomSliderLNF.h"
+#include "Setekh/ui/CustomSplashScreen.h"
+#include "Setekh/ui/CustomToggleLNF.h"
+#include "Setekh/PluginProcessor.h"
 
 class SetekhAudioProcessorEditor : public juce::AudioProcessorEditor, public juce::KeyListener {
 public:

@@ -2,7 +2,7 @@
 // Copyright (c) 2025 Full FX Media
 //
 
-#include "CustomKnobLNF.h"
+#include "Setekh/ui/CustomKnobLNF.h"
 
 CustomKnobLNF::CustomKnobLNF() {
     knobImage = juce::ImageCache::getFromMemory(BinaryData::drive_knob_png, BinaryData::drive_knob_pngSize);

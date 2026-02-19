@@ -35,7 +35,8 @@
 
 # Build
 cmake-build-make/
-build*/
+build/
+libs/
 .cache/
 CMakeCache.txt
 CMakeFiles/
@@ -49,6 +50,4 @@ docs/ui/exports
 # affinity designer
 **/*.afdesign~lock~
 
-# ide
 .vscode
-.cmake

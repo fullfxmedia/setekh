@@ -1,102 +1,38 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.26)
 
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>" CACHE STRING "Runtime Library")
-set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13 CACHE STRING "Build for 10.13")
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+project(Setekh VERSION 0.0.1 LANGUAGES C CXX)
 
-option(BUILD_STANDALONE "Standalone plugin format" ON)
+if (MSVC)
+  set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+endif()
 
-if(DEFINED ENV{VERSION})
-    set(PROJECT_VERSION $ENV{VERSION})
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+set(LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libs)
+include(cmake/cpm.cmake)
+
+CPMAddPackage(
+    NAME JUCE
+    GITHUB_REPOSITORY juce-framework/JUCE
+    GIT_TAG 8.0.8
+    VERSION 8.0.8
+    SOURCE_DIR ${LIB_DIR}/juce
+)
+
+set(CLAP_JUCE_EXT_COMMIT 02f91b7)
+CPMAddPackage(
+    NAME ClapJuceExtensions
+    VERSION 0.0.0-${CLAP_JUCE_EXT_COMMIT}
+    GITHUB_REPOSITORY free-audio/clap-juce-extensions
+    GIT_TAG ${CLAP_JUCE_EXT_COMMIT}
+)
+
+if (MSVC)
+    add_compile_options(/Wall)
 else()
-    set(PROJECT_VERSION "0.0.1")
+    add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-project(Setekh VERSION ${PROJECT_VERSION})
-
-add_compile_definitions(PROJECT_VERSION="${PROJECT_VERSION}")
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_XCODE_GENERATE_SCHEME OFF)
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
-add_subdirectory(lib/JUCE)
-
-set(plugin_formats
-  VST3
-  AU
-  LV2
-)
-
-if(BUILD_STANDALONE)
-  list(APPEND plugin_formats Standalone)
-endif()
-
-juce_add_plugin(${PROJECT_NAME}
-  COMPANY_NAME "Full FX Media"
-  IS_SYNTH FALSE
-  NEEDS_MIDI_INPUT FALSE
-  NEEDS_MIDI_OUTPUT FALSE
-  IS_MIDI_EFFECT FALSE
-  EDITOR_WANTS_KEYBOARD_FOCUS FALSE
-  JUCE_VST3_CAN_REPLACE_VST2 FALSE
-  COPY_PLUGIN_AFTER_BUILD TRUE
-  PLUGIN_MANUFACTURER_CODE FFXM
-  PLUGIN_CODE SETK
-  FORMATS ${plugin_formats}
-  PRODUCT_NAME "Setekh"
-  PLUGIN_DESCRIPTION "A minimalistic yet sonically powerful distortion plugin"
-  LV2URI "https://fullfxmedia.com/plugins/diffusia"
-  BUNDLE_ID "com.fullfxmedia.setekh"
-)
-
-file(GLOB_RECURSE src
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
-)
-
-source_group(Source
-    FILES
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/PluginProcessor.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/PluginProcessor.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/PluginEditor.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/PluginEditor.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/CustomKnobLNF.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/CustomKnobLNF.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/CustomSliderLNF.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/CustomSliderLNF.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/CustomSplashScreen.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/CustomSplashScreen.cpp
-)
-
-target_sources(${PROJECT_NAME} PRIVATE ${src})
-
-target_compile_definitions(${PROJECT_NAME}
-    PUBLIC
-        JUCE_WEB_BROWSER=0
-        JUCE_USE_CURL=0
-        JUCE_VST3_CAN_REPLACE_VST2=0
-)
-
-# Resources
-file(GLOB_RECURSE res "${CMAKE_CURRENT_SOURCE_DIR}/resources/*.*")
-juce_add_binary_data(${PROJECT_NAME}_res SOURCES ${res})
-target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_res)
-
-# JUCE Libraries
-juce_generate_juce_header(${PROJECT_NAME})
-target_link_libraries(${PROJECT_NAME}
-    PRIVATE
-        juce::juce_core
-        juce::juce_graphics
-        juce::juce_gui_basics
-        juce::juce_audio_utils
-        juce::juce_dsp
-    PUBLIC
-        juce::juce_recommended_config_flags
-        juce::juce_recommended_lto_flags
-        juce::juce_recommended_warning_flags
-)
-
-if(APPLE)
-    target_compile_definitions(${PROJECT_NAME} PUBLIC JUCE_AU=1)
-endif()
+add_subdirectory(plugin)

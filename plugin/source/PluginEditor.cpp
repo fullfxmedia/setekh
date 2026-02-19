@@ -1,4 +1,4 @@
-#include "PluginEditor.h"
+#include "Setekh/PluginEditor.h"
 
 #if defined(__aarch64__) || defined(_M_ARM64)
   #define BUILD_ARCH "arm64"
